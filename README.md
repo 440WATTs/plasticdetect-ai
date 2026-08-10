@@ -13,9 +13,9 @@ Open `http://localhost:8000` (camera needs a secure context — localhost is
 fine; for phone testing, deploy over HTTPS, e.g. GitHub Pages or Netlify).
 
 ## What's real
-- **Classifier**: MobileNetV2 transfer learning, trained via Google Teachable
-  Machine (9 classes: PET/HDPE/PC/PP/LDPE/ABS/PLA/PS/PVC). Converted to
-  TensorFlow.js, runs client-side.
+- **Classifier**: MobileNetV2 transfer learning, trained on the Roboflow
+  "Plastic Waste Type" dataset (786 images, 6 classes: PET/HDPE/PVC/LDPE/PP/PS).
+  73.3% test accuracy. Converted to TensorFlow.js, runs client-side.
 - Loads once, cached in memory for the session; service worker caches the
   model + tfjs runtime for offline use after first visit.
 - Confidence breakdown shown for every class, not just the top prediction.
@@ -24,9 +24,9 @@ fine; for phone testing, deploy over HTTPS, e.g. GitHub Pages or Netlify).
 - Everything else (camera, gallery, history, dark mode, PWA) — fully working.
 
 ## Not yet covered
-Mixed / multi-layer plastic — no public labeled dataset exists for this
-class; the app's guide/info screens still describe it, but the live
-classifier can't predict it (falls into "Unknown" at low confidence instead).
+ABS, PLA, PC, Mixed — no public labeled dataset exists for these; the app's
+guide/info screens still describe them, but the live classifier can't predict
+them (falls into "Unknown" at low confidence instead).
 
 ## Folder structure
 ```
@@ -37,6 +37,6 @@ plasticdetect-ai/
 ├── js/
 │   ├── data.js          # plastic knowledge base
 │   ├── classifier.js    # real model + heuristic fallback
-│   ├── model/           # tfjs model.json + weights.bin + class_map.json
+│   ├── model/           # tfjs model.json + weight shards + class_map.json
 │   └── app.js
 ```
