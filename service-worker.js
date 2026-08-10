@@ -1,15 +1,15 @@
-const CACHE_NAME = "plasticdetect-v2";
+const CACHE_NAME = "plasticdetect-v5";
 const ASSETS = [
   "./",
   "./index.html",
   "./css/styles.css",
+  "./js/i18n.js",
   "./js/data.js",
   "./js/classifier.js",
   "./js/app.js",
+  "./img/resin-code-example.png",
   "./js/model/model.json",
-  "./js/model/group1-shard1of3.bin",
-  "./js/model/group1-shard2of3.bin",
-  "./js/model/group1-shard3of3.bin",
+  "./js/model/weights.bin",
   "./js/model/class_map.json",
   "./manifest.json",
   "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"
