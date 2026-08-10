@@ -189,9 +189,6 @@
   // ---------- Result rendering ----------
   function renderResult(entry, opts = {}) {
     const info = PLASTIC_DB[entry.classId];
-    const pct = Math.round(entry.confidence * 100);
-    const circumference = 2 * Math.PI * 30;
-    const offset = circumference * (1 - entry.confidence);
 
     const recyclableBadge = info.recyclable === true
       ? `<span class="badge badge-yes">${I18N.t("result_recyclable")}</span>`
@@ -204,7 +201,12 @@
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>${d}</li>
     `).join("");
 
-    const breakdownRows = (entry.allScores || []).map((s) => {
+    // Confidence breakdown: if the top prediction rounds to 100%, show only
+    // that one bar — otherwise show at most the top 3 classes, not all 9.
+    const allScores = entry.allScores || [];
+    const topPct = allScores.length ? Math.round(allScores[0].confidence * 100) : 0;
+    const shownScores = topPct >= 100 ? allScores.slice(0, 1) : allScores.slice(0, Math.min(3, allScores.length));
+    const breakdownRows = shownScores.map((s) => {
       const rowInfo = PLASTIC_DB[s.classId];
       const rowPct = Math.round(s.confidence * 100);
       return `
@@ -222,6 +224,29 @@
       ? `<div class="heuristic-note">${I18N.t("result_heuristic_note")}</div>`
       : "";
 
+    // Waste-stream / recyclability-level / best-action rows — only render
+    // for classes that carry the new guidance fields (PET..PC). MIXED /
+    // UNKNOWN fall back gracefully with these rows simply omitted.
+    const recyclabilityLine = info.recyclabilityLevel
+      ? `<div class="result-meta-row"><span class="meta-value">${I18N.t("recyc_level_" + info.recyclabilityLevel)}</span></div>`
+      : "";
+    const wasteStreamRow = info.wasteStreamKey
+      ? `<div class="result-meta-row">🗑️ <span class="meta-label">${I18N.t("result_put_in")}:</span> <span class="meta-value">${I18N.t(info.wasteStreamKey)}</span></div>`
+      : "";
+    const bestActionRow = info.bestActionKey
+      ? `<div class="result-meta-row">♻️ <span class="meta-label">${I18N.t("result_best_action")}:</span> <span class="meta-value">${I18N.t(info.bestActionKey)}</span></div>`
+      : "";
+    const appMessageBox = info.appMessage ? `<div class="app-message-box">${info.appMessage}</div>` : "";
+    const doNotRow = info.doNot
+      ? `<div class="result-meta-row"><span class="meta-label">${I18N.t("result_do_not")}:</span> ${info.doNot}</div>`
+      : "";
+    const nextRow = info.whatHappensNext
+      ? `<div class="result-meta-row"><span class="meta-label">${I18N.t("result_what_happens_next")}:</span> ${info.whatHappensNext}</div>`
+      : "";
+    const ewasteBox = info.eWasteNote
+      ? `<div class="warning-box">⚠️ <strong>${I18N.t("result_ewaste_warning")}</strong><br>${info.eWasteNote}</div>`
+      : "";
+
     $("#result-body").innerHTML = `
       <div class="result-image-wrap"><img src="${entry.image}" alt="${info.example}" /></div>
 
@@ -231,15 +256,12 @@
           <div class="result-sub">${info.fullName}</div>
           ${recyclableBadge}
         </div>
-        <div class="gauge-wrap">
-          <svg width="74" height="74" viewBox="0 0 74 74">
-            <circle class="gauge-track" cx="37" cy="37" r="30" />
-            <circle class="gauge-fill" cx="37" cy="37" r="30"
-              stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}" />
-          </svg>
-          <div class="gauge-label">${pct}%</div>
-        </div>
       </div>
+
+      ${recyclabilityLine}
+      ${wasteStreamRow}
+      ${bestActionRow}
+      ${appMessageBox}
 
       ${sourceNote}
 
@@ -271,6 +293,10 @@
         <ul class="check-list">${disposalItems}</ul>
       </div>
 
+      ${doNotRow}
+      ${nextRow}
+      ${ewasteBox}
+
       <div class="section-label">${I18N.t("result_environmental_facts")}</div>
       <div class="card fact-card" style="padding:16px;">
         <div class="info-tile" style="padding:0;margin-bottom:10px;">
@@ -284,16 +310,13 @@
         <button class="btn btn-secondary" id="btn-scan-again">${I18N.t("result_scan_again")}</button>
         <button class="btn btn-primary" id="btn-save-result">${I18N.t("result_save")}</button>
       </div>
-    `;
 
-    // animate gauge fill
-    requestAnimationFrame(() => {
-      const fill = $(".gauge-fill");
-      if (fill) fill.style.strokeDashoffset = String(offset);
-    });
+      <div class="not-plastic-link" id="btn-not-plastic-link">${I18N.t("result_not_plastic_link")} →</div>
+    `;
 
     $("#btn-scan-again").addEventListener("click", () => goToScreen("scan"));
     $("#btn-save-result").addEventListener("click", () => showSnackbar(I18N.t("result_saved")));
+    $("#btn-not-plastic-link").addEventListener("click", openNotPlasticSheet);
 
     if (opts.fresh && entry.confidence > 0.95) {
       launchConfetti();
@@ -513,6 +536,32 @@
       ${rows}
     `);
   });
+
+  // ---------- Not Plastic? sheet ----------
+  // Static reference content — the AI model only classifies plastics, so
+  // this is not tied to any classifier output. Reachable from the home
+  // screen tab and from the link at the bottom of every result screen.
+  function openNotPlasticSheet() {
+    const rows = NON_PLASTIC_ORDER.map((id) => {
+      const info = NON_PLASTIC_DB[id];
+      return `
+        <div class="card" style="padding:14px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span class="badge badge-no" style="font-size:10.5px;padding:3px 10px;">${I18N.t("non_plastic_tag")}</span>
+            <span style="font-weight:700;font-size:14px;">${info.name}</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--text-muted);margin-bottom:6px;">${I18N.t("recyc_level_" + info.recyclabilityLevel)} · ${I18N.t(info.wasteStreamKey)}</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.45;">${info.note}</div>
+        </div>
+      `;
+    }).join("");
+    openSheet(`
+      <h3 style="margin:0 0 8px;">${I18N.t("not_plastic_sheet_title")}</h3>
+      <p class="guide-intro">${I18N.t("not_plastic_sheet_intro")}</p>
+      ${rows}
+    `);
+  }
+  $("#open-not-plastic").addEventListener("click", openNotPlasticSheet);
 
   // ---------- Eco tip ----------
   // Named (not auto-invoked) so it can run *after* applyTranslations() in
