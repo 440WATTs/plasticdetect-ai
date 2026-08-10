@@ -1,9 +1,9 @@
-// PlasticDetect AI — Classifier (V2: real trained model)
+// PlasticDetect AI — Classifier (V3: Teachable Machine model)
 //
-// Loads a MobileNetV2 transfer-learning model (trained on the Roboflow
-// "Plastic Waste Type" dataset — PET/HDPE/PVC/LDPE/PP/PS, 73.3% test
-// accuracy) converted to TensorFlow.js and run entirely on-device in the
-// browser. No image ever leaves the device.
+// Loads a MobileNetV2 transfer-learning model trained via Google Teachable
+// Machine — 9 classes (PET/HDPE/PC/PP/LDPE/ABS/PLA/PS/PVC) — converted to
+// TensorFlow.js and run entirely on-device in the browser. No image ever
+// leaves the device.
 //
 // Falls back to the old color/texture heuristic ONLY if the TensorFlow.js
 // runtime or the model weights fail to load (e.g. first visit with no
@@ -66,14 +66,13 @@ const Classifier = (() => {
     emitStatus("error");
   }
 
-  // ---- Preprocessing: must exactly match the Python training pipeline ----
-  // Python side (train.py):
-  //   image_dataset_from_directory(..., image_size=(224,224))   -> RGB, 224x224
-  //   keras.applications.mobilenet_v2.preprocess_input(x)       -> x/127.5 - 1.0
-  // JS side below mirrors both steps exactly:
+  // ---- Preprocessing: must exactly match Teachable Machine's pipeline ----
+  // Teachable Machine's image models resize to 224x224 and normalize with
+  // the same MobileNetV2 convention: x/127.5 - 1.0 -> [-1, 1]. JS side below
+  // mirrors both steps:
   //   - tf.browser.fromPixels reads canvas/image data in R,G,B order (alpha
-  //     dropped), so channel order already matches PIL's RGB decoding.
-  //   - resizeBilinear to 224x224, then the identical /127.5 - 1.0 scaling.
+  //     dropped).
+  //   - resizeBilinear to 224x224, then the /127.5 - 1.0 scaling.
   function preprocess(imageElement) {
     return tf.tidy(() => {
       let img = tf.browser.fromPixels(imageElement).toFloat(); // H x W x 3, RGB, 0-255

@@ -89,11 +89,12 @@ const PLASTIC_DB = {
     example: "ABS Plastic Toy",
     recyclable: false,
     category: "Engineering thermoplastic",
+    resinFamily: "7",
     uses: ["Toys (e.g. LEGO)", "Electronics housings", "Automotive trim"],
     disposal: ["Check for specialty e-waste or #7 programs", "Not standard curbside recyclable", "Reuse or repurpose where possible"],
     decomposition: "Does not readily biodegrade",
     fact: "ABS is prized for impact resistance, which is exactly why LEGO bricks survive being stepped on.",
-    color: "#FBBF24"
+    color: "#A78BFA"
   },
   PLA: {
     name: "PLA",
@@ -102,11 +103,12 @@ const PLASTIC_DB = {
     example: "PLA Bioplastic",
     recyclable: false,
     category: "Bioplastic (compostable)",
+    resinFamily: "7",
     uses: ["Compostable cutlery", "3D printing filament", "Cold cups"],
     disposal: ["Send to industrial composting, not curbside recycling", "Will not break down in a landfill like compost", "Never mix with regular plastic recycling"],
     decomposition: "3-6 months (industrial compost only)",
     fact: "PLA is made from corn starch or sugarcane, but it still needs industrial heat and moisture to compost.",
-    color: "#34D399"
+    color: "#A78BFA"
   },
   PC: {
     name: "PC",
@@ -115,11 +117,12 @@ const PLASTIC_DB = {
     example: "PC Water Bottle",
     recyclable: false,
     category: "Engineering thermoplastic",
+    resinFamily: "7",
     uses: ["Reusable water bottles", "Eyeglass lenses", "CDs/DVDs"],
     disposal: ["Check for #7 specialty recycling", "Not standard curbside recyclable", "Prefer BPA-free reusable alternatives"],
     decomposition: "Does not readily biodegrade",
     fact: "Older polycarbonate bottles were a major source of BPA exposure, which pushed the shift to Tritan and PP bottles.",
-    color: "#38BDF8"
+    color: "#A78BFA"
   },
   MIXED: {
     name: "Mixed Plastic",
@@ -149,7 +152,11 @@ const PLASTIC_DB = {
   }
 };
 
-const PLASTIC_ORDER = ["PET", "HDPE", "PVC", "LDPE", "PP", "PS", "ABS", "PLA", "PC", "MIXED", "UNKNOWN"];
+// Used to render the "What do plastic numbers mean?" guide — the official
+// 1-7 resin code family. MIXED isn't part of the numbered resin code system
+// so it's intentionally excluded from this list (it still exists in
+// PLASTIC_DB for the classifier / result screen).
+const PLASTIC_ORDER = ["PET", "HDPE", "PVC", "LDPE", "PP", "PS", "ABS", "PLA", "PC", "UNKNOWN"];
 
 const ECO_TIPS = [
   "Rinsing containers before recycling prevents contamination of the whole batch.",

@@ -37,6 +37,15 @@
     showSnackbar._t = setTimeout(() => bar.classList.remove("show"), 2200);
   }
 
+  // ---------- Translations ----------
+  function applyTranslations() {
+    document.title = "PlasticDetect AI";
+    $$("[data-i18n]").forEach((el) => { el.textContent = I18N.t(el.dataset.i18n); });
+    $$("[data-i18n-placeholder]").forEach((el) => { el.placeholder = I18N.t(el.dataset.i18nPlaceholder); });
+    const lang = I18N.LANGS.find((l) => l.code === I18N.getLang()) || I18N.LANGS[0];
+    $("#row-language-value").textContent = `${lang.native} ›`;
+  }
+
   function openSheet(html) {
     $("#sheet-content").innerHTML = html;
     $("#sheet-backdrop").classList.add("show");
@@ -101,7 +110,7 @@
     } catch (err) {
       video.classList.add("hidden");
       placeholder.classList.remove("hidden");
-      placeholder.querySelector("span").textContent = "Camera unavailable — use Gallery instead";
+      placeholder.querySelector("span").textContent = I18N.t("scan_camera_unavailable");
     }
   }
   function stopCamera() {
@@ -118,7 +127,7 @@
   $("#btn-flash").addEventListener("click", (e) => {
     state.flashOn = !state.flashOn;
     e.currentTarget.classList.toggle("active", state.flashOn);
-    showSnackbar(state.flashOn ? "Flash on" : "Flash off");
+    showSnackbar(state.flashOn ? I18N.t("scan_flash_on") : I18N.t("scan_flash_off"));
   });
 
   $("#btn-shutter").addEventListener("click", () => {
@@ -185,10 +194,10 @@
     const offset = circumference * (1 - entry.confidence);
 
     const recyclableBadge = info.recyclable === true
-      ? `<span class="badge badge-yes">✓ Recyclable</span>`
+      ? `<span class="badge badge-yes">${I18N.t("result_recyclable")}</span>`
       : info.recyclable === false
-        ? `<span class="badge badge-no">✕ Not curbside recyclable</span>`
-        : `<span class="badge badge-unknown">? Unclear</span>`;
+        ? `<span class="badge badge-no">${I18N.t("result_not_recyclable")}</span>`
+        : `<span class="badge badge-unknown">${I18N.t("result_unclear")}</span>`;
 
     const usesTags = (info.uses || []).map((u) => `<span class="tag">${u}</span>`).join("") || `<span class="tag">—</span>`;
     const disposalItems = (info.disposal || []).map((d) => `
@@ -210,7 +219,7 @@
     }).join("");
 
     const sourceNote = entry.source === "heuristic"
-      ? `<div class="heuristic-note">⚠ AI model unavailable for this scan — estimated with an on-device fallback. Results may be less reliable.</div>`
+      ? `<div class="heuristic-note">${I18N.t("result_heuristic_note")}</div>`
       : "";
 
     $("#result-body").innerHTML = `
@@ -236,44 +245,44 @@
 
       <div class="info-grid">
         <div class="card info-tile">
-          <div class="label">Plastic Number</div>
+          <div class="label">${I18N.t("result_plastic_number")}</div>
           <div class="value" style="color:${info.color}">♳ ${info.name} (${info.symbol})</div>
         </div>
         <div class="card info-tile">
-          <div class="label">Category</div>
+          <div class="label">${I18N.t("result_category")}</div>
           <div class="value">${info.category}</div>
         </div>
       </div>
 
       ${breakdownRows ? `
-      <div class="section-label">Confidence Breakdown</div>
+      <div class="section-label">${I18N.t("result_confidence_breakdown")}</div>
       <div class="card" style="padding:16px;">
         ${breakdownRows}
       </div>
       ` : ""}
 
-      <div class="section-label">Common Uses</div>
+      <div class="section-label">${I18N.t("result_common_uses")}</div>
       <div class="card" style="padding:14px;">
         <div class="tag-list">${usesTags}</div>
       </div>
 
-      <div class="section-label">Disposal</div>
+      <div class="section-label">${I18N.t("result_disposal")}</div>
       <div class="card" style="padding:16px;">
         <ul class="check-list">${disposalItems}</ul>
       </div>
 
-      <div class="section-label">Environmental Facts</div>
+      <div class="section-label">${I18N.t("result_environmental_facts")}</div>
       <div class="card fact-card" style="padding:16px;">
         <div class="info-tile" style="padding:0;margin-bottom:10px;">
-          <div class="label">Average Decomposition</div>
+          <div class="label">${I18N.t("result_avg_decomposition")}</div>
           <div class="value">${info.decomposition}</div>
         </div>
         <div style="font-size:14px;line-height:1.5;color:var(--text);">${info.fact}</div>
       </div>
 
       <div class="btn-row" style="margin-top:20px;">
-        <button class="btn btn-secondary" id="btn-scan-again">Scan Again</button>
-        <button class="btn btn-primary" id="btn-save-result">Save</button>
+        <button class="btn btn-secondary" id="btn-scan-again">${I18N.t("result_scan_again")}</button>
+        <button class="btn btn-primary" id="btn-save-result">${I18N.t("result_save")}</button>
       </div>
     `;
 
@@ -284,7 +293,7 @@
     });
 
     $("#btn-scan-again").addEventListener("click", () => goToScreen("scan"));
-    $("#btn-save-result").addEventListener("click", () => showSnackbar("Scan saved to history"));
+    $("#btn-save-result").addEventListener("click", () => showSnackbar(I18N.t("result_saved")));
 
     if (opts.fresh && entry.confidence > 0.95) {
       launchConfetti();
@@ -295,9 +304,10 @@
   $("#result-share").addEventListener("click", () => {
     if (navigator.share && state.lastCapture) {
       const info = PLASTIC_DB[state.lastCapture.classId];
-      navigator.share({ title: "PlasticDetect AI", text: `I scanned a ${info.example} — ${info.recyclable ? "recyclable" : "not curbside recyclable"}.` }).catch(() => {});
+      const status = info.recyclable ? I18N.t("result_share_recyclable") : I18N.t("result_share_not_recyclable");
+      navigator.share({ title: "PlasticDetect AI", text: I18N.t("result_share_text", { example: info.example, status }) }).catch(() => {});
     } else {
-      showSnackbar("Sharing not supported on this device");
+      showSnackbar(I18N.t("result_share_unsupported"));
     }
   });
 
@@ -306,7 +316,7 @@
     const list = loadHistory();
     const slot = $("#recent-scan-slot");
     if (!list.length) {
-      slot.innerHTML = `<div class="card" style="padding:16px;color:var(--text-muted);font-size:14px;">No scans yet — take your first photo above.</div>`;
+      slot.innerHTML = `<div class="card" style="padding:16px;color:var(--text-muted);font-size:14px;">${I18N.t("home_no_scans")}</div>`;
       return;
     }
     const entry = list[0];
@@ -316,7 +326,7 @@
         <img src="${entry.image}" class="history-thumb" alt="${info.example}" />
         <div class="history-info">
           <div class="history-title">${info.example}</div>
-          <div class="history-meta">${Math.round(entry.confidence * 100)}% confidence · ${timeAgo(entry.timestamp)}</div>
+          <div class="history-meta">${Math.round(entry.confidence * 100)}% ${I18N.t("history_confidence_word")} · ${timeAgo(entry.timestamp)}</div>
         </div>
         <svg class="chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
@@ -332,12 +342,12 @@
   function timeAgo(ts) {
     const diff = Date.now() - ts;
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "Just now";
-    if (mins < 60) return `${mins}m ago`;
+    if (mins < 1) return I18N.t("time_just_now");
+    if (mins < 60) return I18N.t("time_m_ago", { n: mins });
     const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h ago`;
+    if (hrs < 24) return I18N.t("time_h_ago", { n: hrs });
     const days = Math.floor(hrs / 24);
-    if (days < 7) return `${days}d ago`;
+    if (days < 7) return I18N.t("time_d_ago", { n: days });
     return new Date(ts).toLocaleDateString();
   }
 
@@ -352,7 +362,7 @@
       container.innerHTML = `
         <div class="empty-state">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 5v5h5M12 7v5l4 2"/></svg>
-          <div>No scans found</div>
+          <div>${I18N.t("history_none_found")}</div>
         </div>`;
       return;
     }
@@ -365,7 +375,7 @@
             <div class="history-title">${info.example}</div>
             <div class="history-meta">${Math.round(entry.confidence * 100)}% · ${timeAgo(entry.timestamp)}</div>
           </div>
-          <button class="history-delete" data-delete="${entry.id}" aria-label="Delete">
+          <button class="history-delete" data-delete="${entry.id}" aria-label="${I18N.t("history_delete_aria")}">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 6"/></svg>
           </button>
         </div>
@@ -378,7 +388,7 @@
       const updated = loadHistory().filter((x) => x.id !== id);
       saveHistory(updated);
       renderHistory($("#history-search").value);
-      showSnackbar("Scan deleted");
+      showSnackbar(I18N.t("history_deleted"));
     }));
 
     $$(".history-item").forEach((row) => row.addEventListener("click", () => {
@@ -395,11 +405,11 @@
   // ---------- Settings actions ----------
   $("#row-clear-history").addEventListener("click", () => {
     openSheet(`
-      <h3 style="margin:0 0 6px;">Clear scan history?</h3>
-      <p style="color:var(--text-muted);font-size:14px;margin:0 0 18px;">This removes all saved scans from this device. This can't be undone.</p>
+      <h3 style="margin:0 0 6px;">${I18N.t("settings_clear_confirm_title")}</h3>
+      <p style="color:var(--text-muted);font-size:14px;margin:0 0 18px;">${I18N.t("settings_clear_confirm_body")}</p>
       <div class="btn-row">
-        <button class="btn btn-secondary" id="cancel-clear">Cancel</button>
-        <button class="btn btn-primary" id="confirm-clear" style="background:linear-gradient(135deg,#FF5252,#FF8A65)">Clear</button>
+        <button class="btn btn-secondary" id="cancel-clear">${I18N.t("common_cancel")}</button>
+        <button class="btn btn-primary" id="confirm-clear" style="background:linear-gradient(135deg,#FF5252,#FF8A65)">${I18N.t("common_clear")}</button>
       </div>
     `);
     $("#confirm-clear").addEventListener("click", () => {
@@ -407,49 +417,111 @@
       closeSheet();
       renderHistory();
       renderRecentScan();
-      showSnackbar("History cleared");
+      showSnackbar(I18N.t("settings_history_cleared"));
     });
     $("#cancel-clear").addEventListener("click", closeSheet);
   });
   $("#row-about").addEventListener("click", () => openSheet(`
-    <h3 style="margin:0 0 8px;">About PlasticDetect AI</h3>
+    <h3 style="margin:0 0 8px;">${I18N.t("about_title")}</h3>
     <p style="color:var(--text-muted);font-size:14px;line-height:1.5;">
-      Version 1 of a larger Smart Waste Management platform. Plastic type identification (PET, HDPE,
-      PVC, LDPE, PP, PS) runs on a MobileNetV2 model trained on-device in your browser — no photo is
-      ever uploaded anywhere. If the model can't load, a simpler on-device estimate is used instead,
-      and you'll see a notice when that happens.
+      ${I18N.t("about_body")}
     </p>
   `));
   $("#row-privacy").addEventListener("click", () => openSheet(`
-    <h3 style="margin:0 0 8px;">Privacy</h3>
+    <h3 style="margin:0 0 8px;">${I18N.t("privacy_title")}</h3>
     <p style="color:var(--text-muted);font-size:14px;line-height:1.5;">
-      Photos are processed on your device and saved only to local storage on this device. Nothing is uploaded to a server in this build.
+      ${I18N.t("privacy_body")}
     </p>
   `));
-  $("#row-language").addEventListener("click", () => showSnackbar("English is the only language available right now"));
+
+  // ---------- Language picker ----------
+  $("#row-language").addEventListener("click", () => {
+    const current = I18N.getLang();
+    const rows = I18N.LANGS.map((l) => `
+      <div class="card-row lang-row" data-lang="${l.code}" style="padding:12px 4px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-weight:700;font-size:14px;">${l.native}${l.code !== "en" ? ` <span style="color:var(--text-muted);font-weight:500;">— ${l.label}</span>` : ""}</div>
+          ${l.beta ? `<div style="font-size:11.5px;color:var(--text-muted);">Beta — partial translation</div>` : ""}
+        </div>
+        ${l.code === current ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ""}
+      </div>
+    `).join("");
+    openSheet(`<h3 style="margin:0 0 10px;">${I18N.t("language_sheet_title")}</h3>${rows}`);
+    $$(".lang-row").forEach((row) => row.addEventListener("click", () => {
+      I18N.setLang(row.dataset.lang);
+      closeSheet();
+      applyTranslations();
+      setEcoTip();
+      renderRecentScan();
+      renderHistory($("#history-search").value);
+      if (state.lastCapture) renderResult(state.lastCapture);
+    }));
+  });
 
   // ---------- Guide sheet ----------
+  // Renders the true "chasing arrows" resin-identification-code symbol (a
+  // triangle of three rounded arrows) with the resin number — or "?" for
+  // Unknown — set inside it, colored to match the plastic's accent color.
+  function resinCodeIcon(symbolText, color) {
+    return `
+      <svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+        <path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/>
+        <path d="m14 16-3 3 3 3"/>
+        <path d="M8.293 13.596 7.196 9.5 3.1 10.598"/>
+        <path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/>
+        <path d="m13.378 9.633 4.096 1.098 1.097-4.096"/>
+        <text x="12" y="14.6" font-size="6.4" font-weight="800" text-anchor="middle" fill="${color}" stroke="none" font-family="inherit">${symbolText}</text>
+      </svg>
+    `;
+  }
+
   $("#open-guide").addEventListener("click", () => {
+    let sevenFamilyOpened = false;
     const rows = PLASTIC_ORDER.map((id) => {
       const info = PLASTIC_DB[id];
+      const recyclabilityLabel = info.recyclable === true ? I18N.t("guide_recyclable_wide")
+        : info.recyclable === false ? I18N.t("guide_recyclable_limited")
+        : I18N.t("guide_recyclable_varies");
+
+      // ABS / PLA / PC are all resin code #7 — group them under one shared
+      // family header + accent color so they read as one family rather than
+      // three unrelated entries that happen to share a digit.
+      let familyHeader = "";
+      if (info.resinFamily === "7" && !sevenFamilyOpened) {
+        sevenFamilyOpened = true;
+        familyHeader = `<div class="resin-family-label" style="color:${info.color};">Resin Code 7 — Other (Engineering &amp; Bioplastics)</div>`;
+      }
+
       return `
+        ${familyHeader}
         <div class="card-row" style="padding:10px 0;border-bottom:1px solid var(--border);">
-          <div class="resin-chip" style="color:${info.color}">${info.symbol}</div>
+          <div class="resin-chip">${resinCodeIcon(info.symbol, info.color)}</div>
           <div>
             <div style="font-weight:700;font-size:14px;">${info.name} <span style="color:var(--text-muted);font-weight:500;">— ${info.fullName}</span></div>
-            <div style="font-size:12.5px;color:var(--text-muted);">${info.recyclable === true ? "Widely recyclable" : info.recyclable === false ? "Limited / specialty recycling" : "Varies"}</div>
+            <div style="font-size:12.5px;color:var(--text-muted);">${recyclabilityLabel}</div>
           </div>
         </div>
       `;
     }).join("");
-    openSheet(`<h3 style="margin:0 0 10px;">Plastic Resin Codes</h3>${rows}`);
+
+    openSheet(`
+      <h3 style="margin:0 0 10px;">${I18N.t("guide_title")}</h3>
+      <p class="guide-intro">${I18N.t("guide_intro")}</p>
+      <img class="guide-example-img" src="img/resin-code-example.png" alt="${I18N.t("guide_example_alt")}" />
+      <div class="guide-example-caption">${I18N.t("guide_example_caption")}</div>
+      ${rows}
+    `);
   });
 
   // ---------- Eco tip ----------
-  (function setEcoTip() {
+  // Named (not auto-invoked) so it can run *after* applyTranslations() in
+  // Init below — otherwise the data-i18n placeholder sweep would stomp the
+  // real tip text with the "Loading tip…" placeholder.
+  function setEcoTip() {
     const dayIndex = Math.floor(Date.now() / 86400000) % ECO_TIPS.length;
     $("#eco-tip-text").textContent = ECO_TIPS[dayIndex];
-  })();
+  }
 
   // ---------- Confetti ----------
   function launchConfetti() {
@@ -499,15 +571,15 @@
     clearTimeout(updateModelStatusBanner._hideTimer);
 
     if (status === "loading") {
-      text.textContent = "Loading AI model…";
+      text.textContent = I18N.t("model_status_loading");
       banner.classList.remove("hidden");
     } else if (status === "ready") {
-      text.textContent = "AI model ready";
+      text.textContent = I18N.t("model_status_ready");
       banner.classList.add("status-ready");
       banner.classList.remove("hidden");
       updateModelStatusBanner._hideTimer = setTimeout(() => banner.classList.add("hidden"), 1600);
     } else if (status === "error") {
-      text.textContent = "AI model unavailable — using fallback mode";
+      text.textContent = I18N.t("model_status_error");
       banner.classList.add("status-error");
       banner.classList.remove("hidden");
       // stays visible for the session so the user knows results are estimated
@@ -516,6 +588,8 @@
   window.addEventListener("plasticdetect:model-status", (e) => updateModelStatusBanner(e.detail.status));
 
   // ---------- Init ----------
+  applyTranslations();
+  setEcoTip();
   renderRecentScan();
   renderHistory();
 
