@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>PlasticDetect AI</title>
+<meta name="theme-color" content="#00C853" />
+<link rel="manifest" href="manifest.json" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div id="app">
+
+  <div class="model-status-banner hidden" id="model-status-banner">
+    <span class="model-status-spinner" id="model-status-spinner"></span>
+    <span id="model-status-text" data-i18n="model_status_loading">Loading AI model…</span>
+  </div>
+
+  <!-- ============ HOME ============ -->
+  <section id="screen-home" class="screen active">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2v6M8 4l4-2 4 2M6 8h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 8Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">PlasticDetect AI</div>
+          <div class="brand-sub" data-i18n="brand_sub">Identify Plastic Instantly</div>
+        </div>
+      </div>
+      <button class="icon-btn" id="theme-toggle-home" aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36A5.4 5.4 0 0 1 12 3Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="scan-cta">
+      <div class="scan-ring" id="home-scan-ring">
+        <div class="scan-ring-core">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M4 16v2a2 2 0 0 0 2 2h2M20 8V6a2 2 0 0 0-2-2h-2M20 16v2a2 2 0 0 1-2 2h-2M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="home_tap_scan">Tap to Scan</span>
+        </div>
+      </div>
+      <div class="scan-actions">
+        <button class="btn btn-primary" id="home-take-photo" data-i18n="home_take_photo">Take Photo</button>
+        <button class="btn btn-secondary" id="home-choose-gallery" data-i18n="home_choose_gallery">Choose from Gallery</button>
+      </div>
+    </div>
+
+    <div class="section-label" data-i18n="home_recent_scan">Recent scan</div>
+    <div id="recent-scan-slot"></div>
+
+    <div class="section-label" data-i18n="home_learn">Learn</div>
+    <div class="mini-card card" id="open-guide">
+      <div class="mini-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 4M12 17h.01" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="mini-title" data-i18n="home_guide_title">What do plastic numbers mean?</div>
+        <div class="mini-sub" data-i18n="home_guide_sub">A quick guide to resin codes 1–7</div>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div class="mini-card card">
+      <div class="mini-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="mini-title" data-i18n="home_eco_tip">Daily eco tip</div>
+        <div class="mini-sub" id="eco-tip-text" data-i18n="home_loading_tip">Loading tip…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCAN ============ -->
+  <section id="screen-scan" class="screen">
+    <div class="topbar">
+      <div class="brand-name" data-i18n="scan_title">Scan</div>
+      <span style="width:40px"></span>
+    </div>
+
+    <div class="camera-wrap" id="camera-wrap">
+      <video id="camera-video" autoplay playsinline muted></video>
+      <img id="captured-preview" class="hidden" alt="Captured item" />
+      <div class="camera-placeholder" id="camera-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8V6a2 2 0 0 1 2-2h2M4 16v2a2 2 0 0 0 2 2h2M20 8V6a2 2 0 0 0-2-2h-2M20 16v2a2 2 0 0 1-2 2h-2M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
+        <span data-i18n="scan_camera_placeholder">Camera preview will appear here</span>
+        <span style="font-size:12px;opacity:0.7" data-i18n="scan_tap_shutter">Tap the shutter to allow camera access</span>
+      </div>
+      <div class="scan-frame" id="scan-frame">
+        <div class="scan-sweep"></div>
+      </div>
+    </div>
+
+    <div class="camera-toolbar">
+      <button class="tool-btn" id="btn-flash" aria-label="Flash">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="shutter-btn" id="btn-shutter" aria-label="Capture photo"></button>
+      <button class="tool-btn" id="btn-switch-camera" aria-label="Switch camera">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h3l1.5-2h7L17 7h3v12H4V7Z" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2"/></svg>
+      </button>
+    </div>
+
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn btn-secondary" id="btn-gallery-scan">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5-9 9"/></svg>
+        <span data-i18n="home_choose_gallery">Choose from Gallery</span>
+      </button>
+    </div>
+    <input type="file" id="file-input" accept="image/*" class="hidden" />
+  </section>
+
+  <!-- ============ HISTORY ============ -->
+  <section id="screen-history" class="screen">
+    <div class="topbar">
+      <div class="brand-name" data-i18n="history_title">History</div>
+      <span style="width:40px"></span>
+    </div>
+    <div class="search-bar card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
+      <input type="text" id="history-search" placeholder="Search scans" data-i18n-placeholder="history_search_placeholder" />
+    </div>
+    <div id="history-list"></div>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section id="screen-settings" class="screen">
+    <div class="topbar">
+      <div class="brand-name" data-i18n="settings_title">Settings</div>
+      <span style="width:40px"></span>
+    </div>
+
+    <div class="card" style="padding: 6px 14px;">
+      <div class="settings-row">
+        <div class="settings-label" data-i18n="settings_dark_mode">Dark Mode</div>
+        <label class="toggle">
+          <input type="checkbox" id="dark-mode-toggle" />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="settings-row" id="row-language">
+        <div class="settings-label" data-i18n="settings_language">Language</div>
+        <div class="settings-value" id="row-language-value">English ›</div>
+      </div>
+      <div class="settings-row" id="row-about">
+        <div class="settings-label" data-i18n="settings_about">About</div>
+        <div class="settings-value">›</div>
+      </div>
+      <div class="settings-row" id="row-privacy">
+        <div class="settings-label" data-i18n="settings_privacy">Privacy</div>
+        <div class="settings-value">›</div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label" data-i18n="settings_model_version">Model Version</div>
+        <div class="settings-value">MobileNetV2 · on-device</div>
+      </div>
+    </div>
+
+    <div class="section-label" data-i18n="settings_data_section">Data</div>
+    <div class="card" style="padding: 6px 14px;">
+      <div class="settings-row" id="row-clear-history">
+        <div class="settings-label" style="color:var(--danger)" data-i18n="settings_clear_history">Clear scan history</div>
+        <div class="settings-value">›</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULT (overlay screen) ============ -->
+  <section id="screen-result" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" id="result-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="brand-name" data-i18n="result_title">Result</div>
+      <button class="icon-btn" id="result-share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.3 10.7 7.4-4.4M8.3 13.3l7.4 4.4"/></svg>
+      </button>
+    </div>
+
+    <div id="result-body"></div>
+  </section>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-screen="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+      <span data-i18n="nav_home">Home</span>
+    </button>
+    <button class="nav-item" data-screen="scan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M4 16v2a2 2 0 0 0 2 2h2M20 8V6a2 2 0 0 0-2-2h-2M20 16v2a2 2 0 0 1-2 2h-2M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
+      <span data-i18n="nav_scan">Scan</span>
+    </button>
+    <button class="nav-item" data-screen="history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 5v5h5M12 7v5l4 2"/></svg>
+      <span data-i18n="nav_history">History</span>
+    </button>
+    <button class="nav-item" data-screen="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+      <span data-i18n="nav_settings">Settings</span>
+    </button>
+  </nav>
+
+  <div class="snackbar" id="snackbar"></div>
+
+  <div class="sheet-backdrop" id="sheet-backdrop"></div>
+  <div class="bottom-sheet" id="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div id="sheet-content"></div>
+  </div>
+
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/classifier.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
