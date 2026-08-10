@@ -1,4 +1,4 @@
-const CACHE_NAME = "plasticdetect-v5";
+const CACHE_NAME = "plasticdetect-v6";
 const ASSETS = [
   "./",
   "./index.html",
