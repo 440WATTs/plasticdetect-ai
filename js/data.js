@@ -26,7 +26,7 @@ const PLASTIC_DB = {
     recyclabilityLevel: "recyclable",
     wasteStreamKey: "waste_dry",
     bestActionKey: "best_action_recycle",
-    appMessage: "You can usually put this item in your household recycling bin for collection. It will be sorted and processed at a local recycling facility.",
+    appMessage: "This is one of the most widely recycled plastics. Place it in your recycling bin for collection — it isn't recycled at home, it's sorted and reprocessed at a recycling facility.",
     doNot: "Don't mix with wet/food waste",
     whatHappensNext: "Sent for material recovery and recycling"
   },
@@ -45,7 +45,7 @@ const PLASTIC_DB = {
     recyclabilityLevel: "recyclable",
     wasteStreamKey: "waste_dry",
     bestActionKey: "best_action_recycle",
-    appMessage: "You can usually put this item in your household recycling bin for collection. It will be sorted and processed at a local recycling facility.",
+    appMessage: "This is one of the most widely recycled plastics. Place it in your recycling bin for collection — it isn't recycled at home, it's sorted and reprocessed at a recycling facility.",
     doNot: "Don't mix with wet/food waste",
     whatHappensNext: "Sent for material recovery and recycling"
   },
@@ -61,12 +61,12 @@ const PLASTIC_DB = {
     decomposition: "Hundreds of years",
     fact: "PVC releases chlorine-based compounds when incinerated, so specialized disposal matters.",
     color: "#F59E0B",
-    recyclabilityLevel: "limited",
+    recyclabilityLevel: "difficult",
     wasteStreamKey: "waste_dry_auth",
     bestActionKey: "best_action_special",
-    appMessage: "Recycling availability is limited. Keep it out of wet waste and do not burn it. Prefer an authorized plastic recycler or collection center.",
-    doNot: "Don't burn it, and don't mix with wet waste",
-    whatHappensNext: "Processed only by specialized recyclers that accept PVC"
+    appMessage: "PVC is rarely accepted by standard recycling programs and can contaminate other recyclables if mixed in. Keep it separate, do not burn it, and take it to a specialized/authorized recycler if one exists near you.",
+    doNot: "Don't burn it, and don't mix with wet waste or other recyclables",
+    whatHappensNext: "Processed only by specialized recyclers that accept PVC — most municipal programs reject it"
   },
   LDPE: {
     name: "LDPE",
@@ -99,12 +99,12 @@ const PLASTIC_DB = {
     decomposition: "20-30 years",
     fact: "PP has a high melting point, which is why it's the go-to plastic for microwave-safe containers.",
     color: "#818CF8",
-    recyclabilityLevel: "recyclable",
+    recyclabilityLevel: "limited",
     wasteStreamKey: "waste_dry",
     bestActionKey: "best_action_recycle",
-    appMessage: "You can usually put this item in your household recycling bin for collection. It will be sorted and processed at a local recycling facility.",
-    doNot: "Don't mix with wet/food waste",
-    whatHappensNext: "Sent for material recovery and recycling"
+    appMessage: "Recycling availability for PP varies a lot by area — not every municipal program accepts it yet. Check with your local recycler, or look for a specialty plastic collection point. It is never recycled at home.",
+    doNot: "Don't assume every curbside program accepts PP",
+    whatHappensNext: "Sent for recycling where a PP collection channel exists — otherwise treated as reject waste"
   },
   PS: {
     name: "PS",
@@ -159,12 +159,12 @@ const PLASTIC_DB = {
     decomposition: "3-6 months (industrial compost only)",
     fact: "PLA is made from corn starch or sugarcane, but it still needs industrial heat and moisture to compost.",
     color: "#A78BFA",
-    recyclabilityLevel: "limited",
+    recyclabilityLevel: "difficult",
     wasteStreamKey: "waste_dry_compost",
     bestActionKey: "best_action_compost",
-    appMessage: "Do not put this with conventional plastic recycling. PLA needs an industrial composting or dedicated collection system.",
+    appMessage: "PLA is not accepted by standard plastic recyclers and will contaminate the batch if mixed in. It needs a dedicated industrial composting facility, which may not be available in your area — treat it as difficult to process responsibly.",
     doNot: "Don't put it in wet/organic waste at home — most home compost can't break it down either",
-    whatHappensNext: "Processed only by industrial composting facilities that accept PLA"
+    whatHappensNext: "Processed only by industrial composting facilities that accept PLA — rarely available in most areas"
   },
   PC: {
     name: "PC",

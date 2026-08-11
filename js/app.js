@@ -190,11 +190,16 @@
   function renderResult(entry, opts = {}) {
     const info = PLASTIC_DB[entry.classId];
 
-    const recyclableBadge = info.recyclable === true
+    // Three-tier recyclability badge, driven by the same recyclabilityLevel
+    // field used for the "recyc_level_*" guidance row — green/yellow/red
+    // instead of a misleading recyclable/not-recyclable binary.
+    const recyclableBadge = info.recyclabilityLevel === "recyclable"
       ? `<span class="badge badge-yes">${I18N.t("result_recyclable")}</span>`
-      : info.recyclable === false
-        ? `<span class="badge badge-no">${I18N.t("result_not_recyclable")}</span>`
-        : `<span class="badge badge-unknown">${I18N.t("result_unclear")}</span>`;
+      : info.recyclabilityLevel === "limited"
+        ? `<span class="badge badge-limited">${I18N.t("result_limited_recyclable")}</span>`
+        : info.recyclabilityLevel === "difficult"
+          ? `<span class="badge badge-no">${I18N.t("result_not_recyclable")}</span>`
+          : `<span class="badge badge-unknown">${I18N.t("result_unclear")}</span>`;
 
     const usesTags = (info.uses || []).map((u) => `<span class="tag">${u}</span>`).join("") || `<span class="tag">—</span>`;
     const disposalItems = (info.disposal || []).map((d) => `
@@ -379,7 +384,9 @@
   $("#result-share").addEventListener("click", () => {
     if (navigator.share && state.lastCapture) {
       const info = PLASTIC_DB[state.lastCapture.classId];
-      const status = info.recyclable ? I18N.t("result_share_recyclable") : I18N.t("result_share_not_recyclable");
+      const status = info.recyclabilityLevel === "recyclable" ? I18N.t("result_share_recyclable")
+        : info.recyclabilityLevel === "limited" ? I18N.t("result_share_limited")
+        : I18N.t("result_share_not_recyclable");
       navigator.share({ title: "PlasticDetect AI", text: I18N.t("result_share_text", { example: info.name, status }) }).catch(() => {});
     } else {
       showSnackbar(I18N.t("result_share_unsupported"));
@@ -555,8 +562,9 @@
     let sevenFamilyOpened = false;
     const rows = PLASTIC_ORDER.map((id) => {
       const info = PLASTIC_DB[id];
-      const recyclabilityLabel = info.recyclable === true ? I18N.t("guide_recyclable_wide")
-        : info.recyclable === false ? I18N.t("guide_recyclable_limited")
+      const recyclabilityLabel = info.recyclabilityLevel === "recyclable" ? I18N.t("guide_recyclable_wide")
+        : info.recyclabilityLevel === "limited" ? I18N.t("guide_recyclable_limited")
+        : info.recyclabilityLevel === "difficult" ? I18N.t("guide_recyclable_rare")
         : I18N.t("guide_recyclable_varies");
 
       // ABS / PLA / PC are all resin code #7 — group them under one shared
