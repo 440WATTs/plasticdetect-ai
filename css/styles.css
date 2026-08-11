@@ -601,18 +601,53 @@ h1.hero-title {
   margin-top: 12px;
 }
 
-/* ---------- Waste-guidance result rows ---------- */
-.result-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
-.result-meta-row {
-  display: flex; align-items: baseline; gap: 6px;
-  font-size: 13.5px; margin: 6px 0;
-}
-.result-meta-row .meta-label { color: var(--text-muted); font-weight: 600; }
-.result-meta-row .meta-value { font-weight: 700; }
-.app-message-box {
-  background: var(--bg-soft);
+/* ---------- Waste-guidance result groups (iOS grouped-list style) ---------- */
+.result-group {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin: 14px 0;
+}
+.result-group-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.result-group-row:last-child { border-bottom: none; }
+.result-group-row .row-icon {
+  width: 24px; flex-shrink: 0;
+  font-size: 16px; line-height: 1;
+  text-align: center;
+}
+.result-group-row .row-text { flex: 1; min-width: 0; }
+.result-group-row .row-label {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+.result-group-row .row-value { font-size: 14.5px; font-weight: 700; line-height: 1.35; }
+.result-group-row.tappable { cursor: pointer; transition: background 0.15s ease; }
+.result-group-row.tappable:active { background: var(--bg-soft); }
+.result-group-row .row-chip {
+  flex-shrink: 0;
+  font-size: 11px; font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-soft);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.result-group-row .row-chevron { color: var(--text-muted); flex-shrink: 0; }
+
+.app-message-box {
+  background: var(--bg-soft);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-sm);
   padding: 12px 14px;
   font-size: 13.5px;
   line-height: 1.5;
