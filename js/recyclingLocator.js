@@ -16,8 +16,63 @@ const RecyclingLocator = (() => {
   const STORAGE_LAST_LOC = "plasticdetect.lastLocation";
   const CACHE_PREFIX = "plasticdetect.recyclingCache.";
   const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24h
-  const DEFAULT_RADIUS_KM = 5;
-  const RADIUS_OPTIONS_KM = [5, 10, 15];
+  // No manual radius picker — we always search a generous fixed radius and
+  // auto-surface the top 3 nearest results (nearest first), so the UI stays
+  // to a single tap instead of asking the user to pick a distance.
+  const SEARCH_RADIUS_KM = 20;
+  const TOP_N = 3;
+  // Dedupe threshold: an OSM point within this distance of a known center
+  // is treated as the same place (avoids showing the same center twice).
+  const DEDUPE_KM = 0.15;
+
+  // Verified local recycling centers (Guwahati) — OSM/Overpass coverage for
+  // recycling points in this area is sparse/inconsistent, so these are
+  // curated directly (name + address + coords) to guarantee useful results
+  // regardless of what Overpass returns. Always merged with live Overpass
+  // data and re-sorted by actual distance, so they only surface when they
+  // truly are among the nearest centers to the user.
+  const KNOWN_CENTERS = [
+    {
+      id: "known/axom-refurbisher",
+      name: "AXOM Refurbisher",
+      address: "3rd Floor, Kamal C Plaza, Bora Service, South Sarania, Ulubari, Guwahati – 781007",
+      lat: 26.1698183, lng: 91.7626101,
+      recyclingType: "centre",
+      materials: { plastic: true, plasticPackaging: true }
+    },
+    {
+      id: "known/pwmc",
+      name: "Plastic Waste Management Centre (PWMC)",
+      address: "Guwahati–Baihata Rd, Bongolagarh/Borgaon, Hajo Circle, Kamrup – 781104",
+      lat: 26.2391651, lng: 91.6601143,
+      recyclingType: "centre",
+      materials: { plastic: true, plasticPackaging: true }
+    },
+    {
+      id: "known/scrapaxom",
+      name: "ScrapAxom",
+      address: "GS Road, Dispur, Guwahati – 781005",
+      lat: 26.1425317, lng: 91.7939073,
+      recyclingType: "centre",
+      materials: { plastic: true, plasticPackaging: true }
+    },
+    {
+      id: "known/cero-mahindra-mstc",
+      name: "Cero – Mahindra MSTC Recycling Pvt. Ltd.",
+      address: "8P8F+85J, Katanipara, Madanpur, near Madanpur Toll Plaza, Mouza Madartola, Assam – 781101",
+      lat: 26.3158314, lng: 91.7229026,
+      recyclingType: "centre",
+      materials: { plastic: true, plasticPackaging: true }
+    },
+    {
+      id: "known/yadav-traders",
+      name: "Yadav Traders",
+      address: "5RHJ+VF9, Chandrapur Rd, Narengi Tinali, No.1 Bonda Grant, Guwahati – 781026",
+      lat: 26.1796576, lng: 91.8311584,
+      recyclingType: "centre",
+      materials: { plastic: true, plasticPackaging: true }
+    }
+  ];
 
   // Ordered — first failure/timeout falls through to the next mirror.
   const OVERPASS_MIRRORS = [
@@ -33,7 +88,6 @@ const RecyclingLocator = (() => {
   let centerMarkers = []; // [{ marker, id }]
   let currentCenters = [];
   let currentCoords = null;
-  let currentRadiusKm = DEFAULT_RADIUS_KM;
   let currentMaterialHint = null;
   let selectedCenterId = null;
   let initialized = false;
@@ -207,6 +261,19 @@ const RecyclingLocator = (() => {
       const raw = localStorage.getItem(cacheKey(lat, lng, radiusKm));
       return raw ? JSON.parse(raw).centers : null;
     } catch { return null; }
+  }
+
+  // ---------------------------------------------------------------------
+  // Merge the curated KNOWN_CENTERS into whatever Overpass returned. Any
+  // Overpass point within DEDUPE_KM of a known center is dropped in favor
+  // of the curated entry (better name/address), so the same place never
+  // shows up twice.
+  // ---------------------------------------------------------------------
+  function mergeWithKnownCenters(overpassCenters) {
+    const deduped = overpassCenters.filter((oc) =>
+      !KNOWN_CENTERS.some((kc) => distanceKm(oc.lat, oc.lng, kc.lat, kc.lng) < DEDUPE_KM)
+    );
+    return [...KNOWN_CENTERS, ...deduped];
   }
 
   // ---------------------------------------------------------------------
@@ -389,15 +456,15 @@ const RecyclingLocator = (() => {
   // ---------------------------------------------------------------------
   // Orchestration
   // ---------------------------------------------------------------------
-  async function loadAndRender(coords, radiusKm, { forceRefresh = false } = {}) {
+  async function loadAndRender(coords, { forceRefresh = false } = {}) {
     currentCoords = coords;
-    currentRadiusKm = radiusKm;
     setStatus("loading_centers");
     renderSkeleton();
     try {
-      const { centers } = await fetchCenters(coords.lat, coords.lng, radiusKm, { forceRefresh });
-      currentCenters = centers;
-      const sorted = sortCenters(centers, coords, currentMaterialHint);
+      const { centers } = await fetchCenters(coords.lat, coords.lng, SEARCH_RADIUS_KM, { forceRefresh });
+      const merged = mergeWithKnownCenters(centers);
+      currentCenters = merged;
+      const sorted = sortCenters(merged, coords, currentMaterialHint).slice(0, TOP_N);
       if (!sorted.length) {
         setStatus("empty");
       } else {
@@ -406,15 +473,24 @@ const RecyclingLocator = (() => {
       renderList(sorted);
       renderMap(sorted, coords);
     } catch (err) {
-      setStatus("error");
-      renderList([]);
+      // Even if Overpass fails entirely, the curated list still gives a
+      // useful result instead of a hard error.
+      const sorted = sortCenters(KNOWN_CENTERS, coords, currentMaterialHint).slice(0, TOP_N);
+      if (sorted.length) {
+        setStatus("granted");
+        renderList(sorted);
+        renderMap(sorted, coords);
+      } else {
+        setStatus("error");
+        renderList([]);
+      }
     }
   }
 
   async function useDeviceLocation(forceRefresh) {
     try {
       const coords = await detectLocation();
-      await loadAndRender(coords, currentRadiusKm, { forceRefresh });
+      await loadAndRender(coords, { forceRefresh });
     } catch (err) {
       const code = err && err.code;
       if (code === "denied") setStatus("denied");
@@ -424,7 +500,7 @@ const RecyclingLocator = (() => {
       // screen still shows something useful.
       const last = loadLastLocation();
       if (last) {
-        await loadAndRender({ lat: last.lat, lng: last.lng }, currentRadiusKm, {});
+        await loadAndRender({ lat: last.lat, lng: last.lng });
       }
     }
   }
@@ -441,17 +517,6 @@ const RecyclingLocator = (() => {
     const useLocationBtn = $("#recycling-use-location");
     if (useLocationBtn) useLocationBtn.addEventListener("click", () => useDeviceLocation(false));
 
-    const radiusSelect = $("#recycling-radius-select");
-    if (radiusSelect) {
-      radiusSelect.innerHTML = RADIUS_OPTIONS_KM.map((km) => `<option value="${km}">${km} km</option>`).join("");
-      radiusSelect.value = String(currentRadiusKm);
-      radiusSelect.addEventListener("change", () => {
-        const km = Number(radiusSelect.value);
-        if (currentCoords) loadAndRender(currentCoords, km, {});
-        else currentRadiusKm = km;
-      });
-    }
-
     const searchBtn = $("#recycling-search-btn");
     const addressInput = $("#recycling-address-input");
     const runSearch = async () => {
@@ -460,7 +525,7 @@ const RecyclingLocator = (() => {
       setStatus("requesting");
       try {
         const coords = await geocodeAddress(query);
-        await loadAndRender(coords, currentRadiusKm, {});
+        await loadAndRender(coords, {});
       } catch {
         setStatus("error");
       }
@@ -474,14 +539,11 @@ const RecyclingLocator = (() => {
   // ---------------------------------------------------------------------
   function open(opts = {}) {
     currentMaterialHint = opts.materialHint || null;
-    currentRadiusKm = DEFAULT_RADIUS_KM;
 
     if (!initialized) {
       wireControls();
       initialized = true;
     }
-    const radiusSelect = $("#recycling-radius-select");
-    if (radiusSelect) radiusSelect.value = String(currentRadiusKm);
 
     // Screen switch is owned by app.js (goToScreen) — this module only
     // owns what happens once the screen is visible. app.js calls
@@ -494,9 +556,9 @@ const RecyclingLocator = (() => {
       // Show cached location immediately (works offline / while the fresh
       // GPS fix is still pending) and refine with a live fix in the
       // background.
-      loadAndRender({ lat: last.lat, lng: last.lng }, currentRadiusKm, {});
+      loadAndRender({ lat: last.lat, lng: last.lng });
       detectLocation()
-        .then((coords) => loadAndRender(coords, currentRadiusKm, {}))
+        .then((coords) => loadAndRender(coords))
         .catch(() => { /* keep showing the cached-location results */ });
     } else {
       useDeviceLocation(false);

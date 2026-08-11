@@ -255,15 +255,14 @@
 
     const appMessageBox = info.appMessage ? `<div class="app-message-box">${info.appMessage}</div>` : "";
 
-    // Placeholder row for the upcoming "nearest recycling stations" feature —
-    // visible and tappable now (reserves the UI + interaction slot), wired
-    // to a stub that will later open a real locator.
+    // Row that jumps into the real Nearby Recycling Centers locator,
+    // pre-applying a "plastic" material-match hint so tagged centers sort
+    // first (see findNearbyRecycling below / RecyclingLocator.open()).
     const recyclingLocatorRow = info.wasteStreamKey ? `
       <div class="result-group">
         <div class="result-group-row tappable" id="btn-find-recycling">
           <div class="row-icon">📍</div>
           <div class="row-text"><div class="row-value">${I18N.t("result_find_recycling")}</div></div>
-          <span class="row-chip">${I18N.t("result_coming_soon")}</span>
           <svg class="row-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>` : "";
