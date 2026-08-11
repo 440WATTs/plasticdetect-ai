@@ -672,6 +672,94 @@ h1.hero-title {
   cursor: pointer;
 }
 
+/* ---------- Nearby Recycling locator ---------- */
+.recycling-status-banner {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  font-size: 13px; font-weight: 600;
+  color: var(--text-muted);
+  margin: 4px 0 14px;
+}
+.recycling-status-banner.status-granted { color: var(--primary-dark); background: rgba(0, 200, 83, 0.10); border-color: rgba(0, 200, 83, 0.2); }
+.recycling-status-banner.status-denied,
+.recycling-status-banner.status-unavailable,
+.recycling-status-banner.status-unsupported,
+.recycling-status-banner.status-error { color: #B45309; background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.25); }
+.recycling-status-banner.status-requesting,
+.recycling-status-banner.status-loading_centers { color: var(--secondary); }
+
+.recycling-controls { padding: 14px; margin-bottom: 14px; }
+.recycling-search-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.recycling-search-row input {
+  flex: 1; min-width: 0;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-family: inherit; font-size: 14px; color: var(--text);
+  outline: none;
+}
+.recycling-search-row .btn { width: auto; padding: 10px 16px; font-size: 13.5px; }
+.recycling-controls-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.recycling-controls-row .btn-ghost { padding: 8px 4px; font-size: 13.5px; font-weight: 700; }
+#recycling-radius-select {
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-family: inherit; font-size: 13.5px; font-weight: 600;
+  outline: none;
+}
+
+.recycling-map-wrap {
+  width: 100%; height: 220px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+#recycling-map { width: 100%; height: 100%; background: var(--bg-soft); }
+.recycling-user-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--secondary);
+  border: 3px solid var(--surface-solid);
+  box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.3);
+}
+.recycling-pin {
+  width: 16px; height: 16px; border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--primary);
+  border: 2px solid var(--surface-solid);
+}
+.recycling-pin-container { background: var(--text-muted); opacity: 0.75; }
+.recycling-pin-nearest { width: 22px; height: 22px; background: var(--accent); box-shadow: 0 0 0 4px rgba(0, 200, 83, 0.25); }
+
+.recycling-card { padding: 14px; margin-bottom: 10px; }
+.recycling-card-nearest { border: 1.5px solid var(--accent); }
+.recycling-card-selected { box-shadow: 0 0 0 2px var(--secondary); }
+.recycling-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.recycling-card-name { font-weight: 700; font-size: 14.5px; }
+.recycling-card-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.recycling-card-distance { font-weight: 800; font-size: 14px; white-space: nowrap; flex-shrink: 0; }
+.recycling-type-chip {
+  font-size: 10.5px; font-weight: 700;
+  padding: 3px 9px; border-radius: 100px;
+  background: var(--bg-soft); color: var(--text-muted);
+}
+.recycling-type-centre { background: rgba(0, 200, 83, 0.14); color: var(--primary-dark); }
+.recycling-nearest-chip { background: rgba(0, 200, 83, 0.18); color: var(--primary-dark); }
+.recycling-material-chip { background: rgba(41, 121, 255, 0.14); color: var(--secondary); }
+.recycling-directions-link {
+  display: inline-block; margin-top: 10px;
+  font-size: 13px; font-weight: 700;
+  color: var(--primary-dark);
+  text-decoration: none;
+}
+
 /* ---------- Confetti ---------- */
 #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
 
