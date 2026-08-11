@@ -329,6 +329,32 @@
         <span class="co2-quality-tag ${co2Result.quality === "measured" ? "co2-quality-measured" : "co2-quality-estimated"}">${I18N.t(co2Result.quality === "measured" ? "co2_measured" : "co2_estimated")}</span>
       </button>` : "";
 
+    // Estimated scrap value — sits to the right of the plastic type result
+    // (the slot the old circular confidence indicator used to occupy).
+    // Purely informational: a market range, never a single number, never
+    // phrased as an offer/quote from this app. Renders an explanatory
+    // message instead of disappearing when this resin has no household
+    // scrap-buyback channel (PC/ABS/PLA).
+    // Distinguish "this resin isn't in the table at all" (MIXED/UNKNOWN —
+    // hide the row entirely, same as the CO2 chip) from "explicitly no
+    // household scrap-buyback channel" (PC/ABS/PLA — show the row with
+    // an explanatory message, per spec, so the user isn't left wondering).
+    const hasScrapEntry = (typeof SCRAP_VALUE_PER_KG !== "undefined") && (entry.classId in SCRAP_VALUE_PER_KG);
+    const scrapResult = hasScrapEntry && (typeof getScrapValue === "function") ? getScrapValue(entry.classId) : undefined;
+    const scrapValueBox = scrapResult ? `
+      <div class="scrap-value-box">
+        <div class="scrap-value-label">${I18N.t("scrap_value_label")}</div>
+        <div class="scrap-value-row">
+          <span class="scrap-value-amount">${I18N.t("scrap_value_range", { min: scrapResult.min, max: scrapResult.max })}</span>
+          <span class="co2-quality-tag ${scrapResult.quality === "typical" ? "co2-quality-measured" : "co2-quality-estimated"}">${I18N.t(scrapResult.quality === "typical" ? "scrap_quality_typical" : "scrap_quality_estimated")}</span>
+        </div>
+        <div class="scrap-value-disclaimer">${I18N.t("scrap_value_disclaimer")}</div>
+      </div>` : (hasScrapEntry ? `
+      <div class="scrap-value-box">
+        <div class="scrap-value-label">${I18N.t("scrap_value_label")}</div>
+        <div class="scrap-value-unavailable">${I18N.t("scrap_value_unavailable")}</div>
+      </div>` : "");
+
     $("#result-body").innerHTML = `
       <div class="result-image-wrap">
         <img src="${entry.image}" alt="${info.name}" />
@@ -341,6 +367,7 @@
           <div class="result-sub">${info.fullName}</div>
           ${recyclableBadge}
         </div>
+        ${scrapValueBox}
       </div>
 
       ${guidanceGroup}

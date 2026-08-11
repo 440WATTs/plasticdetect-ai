@@ -107,7 +107,13 @@ const I18N_STRINGS = {
     co2_estimated: "Estimated",
     co2_sheet_title: "Carbon Footprint Reduced",
     co2_sheet_intro: "Estimated CO₂e saved by recycling this item instead of making new plastic from scratch, based on a typical 20g item.",
-    co2_sheet_note: "Estimated values are extrapolated from measured PET/HDPE/PP recycling data; actual figures may vary by recycling facility and process."
+    co2_sheet_note: "Estimated values are extrapolated from measured PET/HDPE/PP recycling data; actual figures may vary by recycling facility and process.",
+    scrap_value_label: "Estimated Scrap Value",
+    scrap_value_range: "₹{min}–{max} per kg",
+    scrap_value_disclaimer: "Indicative only — actual rate depends on your city, dealer, and how clean/sorted the plastic is. Prices change daily.",
+    scrap_value_unavailable: "Not typically accepted by local scrap dealers — check with e-waste recyclers.",
+    scrap_quality_typical: "Typical",
+    scrap_quality_estimated: "Estimated"
   },
   hi: {
     nav_home: "होम", nav_scan: "स्कैन", nav_history: "इतिहास", nav_settings: "सेटिंग्स",
@@ -198,7 +204,13 @@ const I18N_STRINGS = {
     co2_estimated: "अनुमानित",
     co2_sheet_title: "कम हुआ कार्बन फुटप्रिंट",
     co2_sheet_intro: "इस वस्तु को नया प्लास्टिक बनाने के बजाय रीसाइकल करने से अनुमानित CO₂e बचत, एक सामान्य 20 ग्राम वस्तु के आधार पर।",
-    co2_sheet_note: "अनुमानित मान मापे गए PET/HDPE/PP रीसाइक्लिंग डेटा से एक्सट्रापोलेट किए गए हैं; वास्तविक आंकड़े रीसाइक्लिंग सुविधा और प्रक्रिया के अनुसार अलग हो सकते हैं।"
+    co2_sheet_note: "अनुमानित मान मापे गए PET/HDPE/PP रीसाइक्लिंग डेटा से एक्सट्रापोलेट किए गए हैं; वास्तविक आंकड़े रीसाइक्लिंग सुविधा और प्रक्रिया के अनुसार अलग हो सकते हैं।",
+    scrap_value_label: "अनुमानित स्क्रैप मूल्य",
+    scrap_value_range: "₹{min}–{max} प्रति किग्रा",
+    scrap_value_disclaimer: "केवल सांकेतिक — वास्तविक दर आपके शहर, डीलर, और प्लास्टिक कितना साफ/छंटा हुआ है इस पर निर्भर करती है। कीमतें रोज़ बदलती हैं।",
+    scrap_value_unavailable: "स्थानीय स्क्रैप डीलर आमतौर पर इसे स्वीकार नहीं करते — ई-वेस्ट रीसाइक्लर से संपर्क करें।",
+    scrap_quality_typical: "सामान्य",
+    scrap_quality_estimated: "अनुमानित"
   },
   as: {
     nav_home: "ঘৰ", nav_scan: "স্কেন", nav_history: "ইতিহাস", nav_settings: "ছেটিংছ",
@@ -289,7 +301,13 @@ const I18N_STRINGS = {
     co2_estimated: "আনুমানিক",
     co2_sheet_title: "কমা কাৰ্বন ফুটপ্ৰিণ্ট",
     co2_sheet_intro: "নতুন প্লাষ্টিক বনোৱাৰ পৰিৱৰ্তে এই বস্তুটো ৰিচাইক্লিং কৰাৰ দ্বাৰা আনুমানিক CO₂e ৰাহি, এটা সাধাৰণ ২০ গ্ৰাম বস্তুৰ ভিত্তিত।",
-    co2_sheet_note: "আনুমানিক মানবোৰ জোখা হোৱা PET/HDPE/PP ৰিচাইক্লিং তথ্যৰ পৰা এক্সট্ৰাপ'লেট কৰা হৈছে; প্ৰকৃত সংখ্যা ৰিচাইক্লিং সুবিধা আৰু প্ৰক্ৰিয়া অনুসৰি সলনি হ'ব পাৰে।"
+    co2_sheet_note: "আনুমানিক মানবোৰ জোখা হোৱা PET/HDPE/PP ৰিচাইক্লিং তথ্যৰ পৰা এক্সট্ৰাপ'লেট কৰা হৈছে; প্ৰকৃত সংখ্যা ৰিচাইক্লিং সুবিধা আৰু প্ৰক্ৰিয়া অনুসৰি সলনি হ'ব পাৰে।",
+    scrap_value_label: "আনুমানিক স্ক্ৰেপ মূল্য",
+    scrap_value_range: "₹{min}–{max} প্ৰতি কিলোগ্ৰাম",
+    scrap_value_disclaimer: "কেৱল ইংগিতমূলক — প্ৰকৃত হাৰ আপোনাৰ চহৰ, ডিলাৰ, আৰু প্লাষ্টিকখন কিমান পৰিষ্কাৰ/বাছনি কৰা হৈছে তাৰ ওপৰত নিৰ্ভৰ কৰে। দাম প্ৰতিদিনে সলনি হয়।",
+    scrap_value_unavailable: "স্থানীয় স্ক্ৰেপ ডিলাৰসকলে সাধাৰণতে ইয়াক গ্ৰহণ নকৰে — ই-ৱেষ্ট ৰিচাইক্লাৰৰ সৈতে যোগাযোগ কৰক।",
+    scrap_quality_typical: "সাধাৰণ",
+    scrap_quality_estimated: "আনুমানিক"
   },
   bn: {
     nav_home: "হোম", nav_scan: "স্ক্যান", nav_history: "ইতিহাস", nav_settings: "সেটিংস",
@@ -380,7 +398,13 @@ const I18N_STRINGS = {
     co2_estimated: "আনুমানিক",
     co2_sheet_title: "কমানো কার্বন ফুটপ্রিন্ট",
     co2_sheet_intro: "নতুন প্লাস্টিক তৈরির পরিবর্তে এই জিনিসটি রিসাইকেল করার মাধ্যমে আনুমানিক CO₂e সাশ্রয়, একটি সাধারণ ২০ গ্রাম জিনিসের ভিত্তিতে।",
-    co2_sheet_note: "আনুমানিক মানগুলো পরিমাপকৃত PET/HDPE/PP রিসাইক্লিং ডেটা থেকে এক্সট্রাপোলেট করা হয়েছে; প্রকৃত সংখ্যা রিসাইক্লিং সুবিধা ও প্রক্রিয়া অনুযায়ী ভিন্ন হতে পারে।"
+    co2_sheet_note: "আনুমানিক মানগুলো পরিমাপকৃত PET/HDPE/PP রিসাইক্লিং ডেটা থেকে এক্সট্রাপোলেট করা হয়েছে; প্রকৃত সংখ্যা রিসাইক্লিং সুবিধা ও প্রক্রিয়া অনুযায়ী ভিন্ন হতে পারে।",
+    scrap_value_label: "আনুমানিক স্ক্র্যাপ মূল্য",
+    scrap_value_range: "₹{min}–{max} প্রতি কেজি",
+    scrap_value_disclaimer: "শুধু ইঙ্গিতমূলক — প্রকৃত দর নির্ভর করে আপনার শহর, ডিলার, এবং প্লাস্টিকটি কতটা পরিষ্কার/বাছাই করা তার উপর। দাম প্রতিদিন পরিবর্তিত হয়।",
+    scrap_value_unavailable: "স্থানীয় স্ক্র্যাপ ডিলাররা সাধারণত এটি গ্রহণ করে না — ই-বর্জ্য রিসাইক্লারের সাথে যোগাযোগ করুন।",
+    scrap_quality_typical: "সাধারণ",
+    scrap_quality_estimated: "আনুমানিক"
   },
   ne: {
     nav_home: "गृह", nav_scan: "स्क्यान", nav_history: "इतिहास", nav_settings: "सेटिङहरू",
@@ -471,7 +495,13 @@ const I18N_STRINGS = {
     co2_estimated: "अनुमानित",
     co2_sheet_title: "घटेको कार्बन फुटप्रिन्ट",
     co2_sheet_intro: "नयाँ प्लास्टिक बनाउनुको सट्टा यो वस्तु पुनर्चक्रण गरेर हुने अनुमानित CO₂e बचत, एक सामान्य २० ग्राम वस्तुको आधारमा।",
-    co2_sheet_note: "अनुमानित मानहरू मापिएको PET/HDPE/PP पुनर्चक्रण डेटाबाट एक्सट्रापोलेट गरिएको हो; वास्तविक तथ्याङ्क पुनर्चक्रण सुविधा र प्रक्रिया अनुसार फरक हुन सक्छ।"
+    co2_sheet_note: "अनुमानित मानहरू मापिएको PET/HDPE/PP पुनर्चक्रण डेटाबाट एक्सट्रापोलेट गरिएको हो; वास्तविक तथ्याङ्क पुनर्चक्रण सुविधा र प्रक्रिया अनुसार फरक हुन सक्छ।",
+    scrap_value_label: "अनुमानित स्क्र्याप मूल्य",
+    scrap_value_range: "₹{min}–{max} प्रति किग्रा",
+    scrap_value_disclaimer: "केवल सांकेतिक — वास्तविक दर तपाईंको शहर, डिलर, र प्लास्टिक कति सफा/छाँटिएको छ भन्नेमा निर्भर गर्छ। मूल्य दैनिक परिवर्तन हुन्छ।",
+    scrap_value_unavailable: "स्थानीय स्क्र्याप डिलरहरूले सामान्यतया यसलाई स्वीकार गर्दैनन् — ई-वेस्ट पुनर्चक्रणकर्तासँग सम्पर्क गर्नुहोस्।",
+    scrap_quality_typical: "सामान्य",
+    scrap_quality_estimated: "अनुमानित"
   },
   // ---- Beta tier: nav + language label only; rest falls back to English ----
   // via I18N's automatic fallback until reviewed by a native speaker.
