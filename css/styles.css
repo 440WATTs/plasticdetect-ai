@@ -367,6 +367,7 @@ h1.hero-title {
   margin-top: 10px;
 }
 .badge-yes { background: rgba(0, 200, 83, 0.14); color: var(--primary-dark); }
+.badge-limited { background: rgba(245, 158, 11, 0.16); color: #B45309; }
 .badge-no { background: rgba(255, 82, 82, 0.14); color: var(--danger); }
 .badge-unknown { background: var(--bg-soft); color: var(--text-muted); }
 
