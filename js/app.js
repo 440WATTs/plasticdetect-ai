@@ -296,8 +296,23 @@
       ? `<div class="warning-box">⚠️ <strong>${I18N.t("result_ewaste_warning")}</strong><br>${info.eWasteNote}</div>`
       : "";
 
+    // Carbon footprint chip — overlaid on the bottom edge of the result
+    // image. Hidden entirely (not a zero/placeholder) when this material
+    // isn't in CO2_SAVED_PER_KG (MIXED, UNKNOWN). Tapping it opens a sheet
+    // listing the figure for every category — see openCO2Sheet() below.
+    const co2Result = (typeof getCO2Saved === "function") ? getCO2Saved(entry.classId) : null;
+    const co2Chip = co2Result ? `
+      <button class="co2-chip" id="co2-chip" type="button">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M8 4l4-2 4 2M6 8h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 8Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="co2-chip-text">${I18N.t("co2_chip_text", { kg: co2Result.saved })}</span>
+        <span class="co2-quality-tag ${co2Result.quality === "measured" ? "co2-quality-measured" : "co2-quality-estimated"}">${I18N.t(co2Result.quality === "measured" ? "co2_measured" : "co2_estimated")}</span>
+      </button>` : "";
+
     $("#result-body").innerHTML = `
-      <div class="result-image-wrap"><img src="${entry.image}" alt="${info.name}" /></div>
+      <div class="result-image-wrap">
+        <img src="${entry.image}" alt="${info.name}" />
+        ${co2Chip}
+      </div>
 
       <div class="result-header">
         <div>
@@ -366,6 +381,8 @@
     $("#btn-not-plastic-link").addEventListener("click", openNotPlasticSheet);
     const findRecyclingBtn = $("#btn-find-recycling");
     if (findRecyclingBtn) findRecyclingBtn.addEventListener("click", () => findNearbyRecycling(info));
+    const co2ChipBtn = $("#co2-chip");
+    if (co2ChipBtn) co2ChipBtn.addEventListener("click", openCO2Sheet);
 
     if (opts.fresh && entry.confidence > 0.95) {
       launchConfetti();
@@ -378,6 +395,43 @@
   function findNearbyRecycling(info) {
     goToScreen("recycling");
     RecyclingLocator.open({ materialHint: "plastic" });
+  }
+
+  // ---------- Carbon footprint sheet ----------
+  // Reference list for every category — tapped open from the co2-chip
+  // overlaid on the result image. Reuses the same bottom-sheet component
+  // as the resin-code guide / Not Plastic? reference sheets.
+  function openCO2Sheet() {
+    const rows = PLASTIC_ORDER
+      .filter((id) => id !== "UNKNOWN")
+      .map((id) => {
+        const info = PLASTIC_DB[id];
+        const result = (typeof getCO2Saved === "function") ? getCO2Saved(id) : null;
+        if (!result) return "";
+        const qualityCls = result.quality === "measured" ? "co2-quality-measured" : "co2-quality-estimated";
+        const qualityLabel = I18N.t(result.quality === "measured" ? "co2_measured" : "co2_estimated");
+        return `
+          <div class="card-row" style="padding:10px 0;border-bottom:1px solid var(--border);">
+            <div class="resin-chip" style="width:32px;flex:0 0 32px;">
+              <span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${info.color};"></span>
+            </div>
+            <div style="flex:1;">
+              <div style="font-weight:700;font-size:14px;">${info.name}</div>
+              <div style="font-size:13px;color:var(--text-muted);">${I18N.t("co2_chip_text", { kg: result.saved })}</div>
+            </div>
+            <span class="co2-quality-tag ${qualityCls}">${qualityLabel}</span>
+          </div>
+        `;
+      })
+      .filter(Boolean)
+      .join("");
+
+    openSheet(`
+      <h3 style="margin:0 0 6px;">${I18N.t("co2_sheet_title")}</h3>
+      <p class="guide-intro">${I18N.t("co2_sheet_intro")}</p>
+      ${rows}
+      <p class="guide-intro" style="margin:14px 0 0;">${I18N.t("co2_sheet_note")}</p>
+    `);
   }
 
   $("#result-back").addEventListener("click", () => goToScreen("home"));

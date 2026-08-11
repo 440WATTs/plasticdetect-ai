@@ -101,7 +101,13 @@ const I18N_STRINGS = {
     recycling_type_unspecified: "Recycling Point",
     recycling_nearest_badge: "Nearest",
     recycling_accepts_material: "Accepts this material",
-    recycling_get_directions: "Get directions"
+    recycling_get_directions: "Get directions",
+    co2_chip_text: "≈ {kg} kg CO₂e saved",
+    co2_measured: "Measured",
+    co2_estimated: "Estimated",
+    co2_sheet_title: "Carbon Footprint Reduced",
+    co2_sheet_intro: "Estimated CO₂e saved by recycling this item instead of making new plastic from scratch, based on a typical 20g item.",
+    co2_sheet_note: "Estimated values are extrapolated from measured PET/HDPE/PP recycling data; actual figures may vary by recycling facility and process."
   },
   hi: {
     nav_home: "होम", nav_scan: "स्कैन", nav_history: "इतिहास", nav_settings: "सेटिंग्स",
@@ -186,7 +192,13 @@ const I18N_STRINGS = {
     recycling_type_unspecified: "रीसाइक्लिंग पॉइंट",
     recycling_nearest_badge: "सबसे नज़दीक",
     recycling_accepts_material: "यह सामग्री स्वीकार करता है",
-    recycling_get_directions: "दिशा-निर्देश पाएं"
+    recycling_get_directions: "दिशा-निर्देश पाएं",
+    co2_chip_text: "≈ {kg} किग्रा CO₂e की बचत",
+    co2_measured: "मापा गया",
+    co2_estimated: "अनुमानित",
+    co2_sheet_title: "कम हुआ कार्बन फुटप्रिंट",
+    co2_sheet_intro: "इस वस्तु को नया प्लास्टिक बनाने के बजाय रीसाइकल करने से अनुमानित CO₂e बचत, एक सामान्य 20 ग्राम वस्तु के आधार पर।",
+    co2_sheet_note: "अनुमानित मान मापे गए PET/HDPE/PP रीसाइक्लिंग डेटा से एक्सट्रापोलेट किए गए हैं; वास्तविक आंकड़े रीसाइक्लिंग सुविधा और प्रक्रिया के अनुसार अलग हो सकते हैं।"
   },
   as: {
     nav_home: "ঘৰ", nav_scan: "স্কেন", nav_history: "ইতিহাস", nav_settings: "ছেটিংছ",
@@ -271,7 +283,13 @@ const I18N_STRINGS = {
     recycling_type_unspecified: "ৰিচাইক্লিং পইণ্ট",
     recycling_nearest_badge: "আটাইতকৈ ওচৰ",
     recycling_accepts_material: "এই সামগ্ৰী গ্ৰহণ কৰে",
-    recycling_get_directions: "দিশনিৰ্দেশনা লওক"
+    recycling_get_directions: "দিশনিৰ্দেশনা লওক",
+    co2_chip_text: "≈ {kg} কিলোগ্ৰাম CO₂e ৰাহি হ'ল",
+    co2_measured: "জোখা হৈছে",
+    co2_estimated: "আনুমানিক",
+    co2_sheet_title: "কমা কাৰ্বন ফুটপ্ৰিণ্ট",
+    co2_sheet_intro: "নতুন প্লাষ্টিক বনোৱাৰ পৰিৱৰ্তে এই বস্তুটো ৰিচাইক্লিং কৰাৰ দ্বাৰা আনুমানিক CO₂e ৰাহি, এটা সাধাৰণ ২০ গ্ৰাম বস্তুৰ ভিত্তিত।",
+    co2_sheet_note: "আনুমানিক মানবোৰ জোখা হোৱা PET/HDPE/PP ৰিচাইক্লিং তথ্যৰ পৰা এক্সট্ৰাপ'লেট কৰা হৈছে; প্ৰকৃত সংখ্যা ৰিচাইক্লিং সুবিধা আৰু প্ৰক্ৰিয়া অনুসৰি সলনি হ'ব পাৰে।"
   },
   bn: {
     nav_home: "হোম", nav_scan: "স্ক্যান", nav_history: "ইতিহাস", nav_settings: "সেটিংস",
@@ -356,7 +374,13 @@ const I18N_STRINGS = {
     recycling_type_unspecified: "রিসাইক্লিং পয়েন্ট",
     recycling_nearest_badge: "সবচেয়ে কাছে",
     recycling_accepts_material: "এই উপাদান গ্রহণ করে",
-    recycling_get_directions: "দিকনির্দেশ পান"
+    recycling_get_directions: "দিকনির্দেশ পান",
+    co2_chip_text: "≈ {kg} কেজি CO₂e সাশ্রয়",
+    co2_measured: "পরিমাপকৃত",
+    co2_estimated: "আনুমানিক",
+    co2_sheet_title: "কমানো কার্বন ফুটপ্রিন্ট",
+    co2_sheet_intro: "নতুন প্লাস্টিক তৈরির পরিবর্তে এই জিনিসটি রিসাইকেল করার মাধ্যমে আনুমানিক CO₂e সাশ্রয়, একটি সাধারণ ২০ গ্রাম জিনিসের ভিত্তিতে।",
+    co2_sheet_note: "আনুমানিক মানগুলো পরিমাপকৃত PET/HDPE/PP রিসাইক্লিং ডেটা থেকে এক্সট্রাপোলেট করা হয়েছে; প্রকৃত সংখ্যা রিসাইক্লিং সুবিধা ও প্রক্রিয়া অনুযায়ী ভিন্ন হতে পারে।"
   },
   ne: {
     nav_home: "गृह", nav_scan: "स्क्यान", nav_history: "इतिहास", nav_settings: "सेटिङहरू",
@@ -441,7 +465,13 @@ const I18N_STRINGS = {
     recycling_type_unspecified: "पुनर्चक्रण बिन्दु",
     recycling_nearest_badge: "सबैभन्दा नजिक",
     recycling_accepts_material: "यो सामग्री स्वीकार गर्छ",
-    recycling_get_directions: "दिशा निर्देश पाउनुहोस्"
+    recycling_get_directions: "दिशा निर्देश पाउनुहोस्",
+    co2_chip_text: "≈ {kg} किग्रा CO₂e बचत",
+    co2_measured: "मापिएको",
+    co2_estimated: "अनुमानित",
+    co2_sheet_title: "घटेको कार्बन फुटप्रिन्ट",
+    co2_sheet_intro: "नयाँ प्लास्टिक बनाउनुको सट्टा यो वस्तु पुनर्चक्रण गरेर हुने अनुमानित CO₂e बचत, एक सामान्य २० ग्राम वस्तुको आधारमा।",
+    co2_sheet_note: "अनुमानित मानहरू मापिएको PET/HDPE/PP पुनर्चक्रण डेटाबाट एक्सट्रापोलेट गरिएको हो; वास्तविक तथ्याङ्क पुनर्चक्रण सुविधा र प्रक्रिया अनुसार फरक हुन सक्छ।"
   },
   // ---- Beta tier: nav + language label only; rest falls back to English ----
   // via I18N's automatic fallback until reviewed by a native speaker.
