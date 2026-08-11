@@ -26,7 +26,7 @@ const PLASTIC_DB = {
     recyclabilityLevel: "recyclable",
     wasteStreamKey: "waste_dry",
     bestActionKey: "best_action_recycle",
-    appMessage: "Recycle this item. Empty and rinse before putting it in dry waste.",
+    appMessage: "You can usually put this item in your household recycling bin for collection. It will be sorted and processed at a local recycling facility.",
     doNot: "Don't mix with wet/food waste",
     whatHappensNext: "Sent for material recovery and recycling"
   },
@@ -45,7 +45,7 @@ const PLASTIC_DB = {
     recyclabilityLevel: "recyclable",
     wasteStreamKey: "waste_dry",
     bestActionKey: "best_action_recycle",
-    appMessage: "Usually recyclable. Empty and clean the container before placing it with dry waste.",
+    appMessage: "You can usually put this item in your household recycling bin for collection. It will be sorted and processed at a local recycling facility.",
     doNot: "Don't mix with wet/food waste",
     whatHappensNext: "Sent for material recovery and recycling"
   },
@@ -102,7 +102,7 @@ const PLASTIC_DB = {
     recyclabilityLevel: "recyclable",
     wasteStreamKey: "waste_dry",
     bestActionKey: "best_action_recycle",
-    appMessage: "Recycle this item. Empty, rinse and dry before placing it with dry recyclable waste.",
+    appMessage: "You can usually put this item in your household recycling bin for collection. It will be sorted and processed at a local recycling facility.",
     doNot: "Don't mix with wet/food waste",
     whatHappensNext: "Sent for material recovery and recycling"
   },

@@ -224,25 +224,70 @@
       ? `<div class="heuristic-note">${I18N.t("result_heuristic_note")}</div>`
       : "";
 
-    // Waste-stream / recyclability-level / best-action rows — only render
-    // for classes that carry the new guidance fields (PET..PC). MIXED /
-    // UNKNOWN fall back gracefully with these rows simply omitted.
-    const recyclabilityLine = info.recyclabilityLevel
-      ? `<div class="result-meta-row"><span class="meta-value">${I18N.t("recyc_level_" + info.recyclabilityLevel)}</span></div>`
-      : "";
-    const wasteStreamRow = info.wasteStreamKey
-      ? `<div class="result-meta-row">🗑️ <span class="meta-label">${I18N.t("result_put_in")}:</span> <span class="meta-value">${I18N.t(info.wasteStreamKey)}</span></div>`
-      : "";
-    const bestActionRow = info.bestActionKey
-      ? `<div class="result-meta-row">♻️ <span class="meta-label">${I18N.t("result_best_action")}:</span> <span class="meta-value">${I18N.t(info.bestActionKey)}</span></div>`
-      : "";
+    // Disposal-guidance group — one iOS-style grouped card instead of loose
+    // lines. Rows only render for classes that carry the new guidance
+    // fields (PET..PC); MIXED / UNKNOWN fall back gracefully with the whole
+    // group omitted. The "Find Nearby Recycling Centers" row is a reserved
+    // placeholder — see findNearbyRecycling() below for the future hook.
+    const guidanceRows = [
+      info.recyclabilityLevel ? `
+        <div class="result-group-row">
+          <div class="row-text"><div class="row-value">${I18N.t("recyc_level_" + info.recyclabilityLevel)}</div></div>
+        </div>` : "",
+      info.wasteStreamKey ? `
+        <div class="result-group-row">
+          <div class="row-icon">🗑️</div>
+          <div class="row-text">
+            <div class="row-label">${I18N.t("result_put_in")}</div>
+            <div class="row-value">${I18N.t(info.wasteStreamKey)}</div>
+          </div>
+        </div>` : "",
+      info.bestActionKey ? `
+        <div class="result-group-row">
+          <div class="row-icon">♻️</div>
+          <div class="row-text">
+            <div class="row-label">${I18N.t("result_best_action")}</div>
+            <div class="row-value">${I18N.t(info.bestActionKey)}</div>
+          </div>
+        </div>` : ""
+    ].filter(Boolean).join("");
+    const guidanceGroup = guidanceRows ? `<div class="result-group">${guidanceRows}</div>` : "";
+
     const appMessageBox = info.appMessage ? `<div class="app-message-box">${info.appMessage}</div>` : "";
-    const doNotRow = info.doNot
-      ? `<div class="result-meta-row"><span class="meta-label">${I18N.t("result_do_not")}:</span> ${info.doNot}</div>`
-      : "";
-    const nextRow = info.whatHappensNext
-      ? `<div class="result-meta-row"><span class="meta-label">${I18N.t("result_what_happens_next")}:</span> ${info.whatHappensNext}</div>`
-      : "";
+
+    // Placeholder row for the upcoming "nearest recycling stations" feature —
+    // visible and tappable now (reserves the UI + interaction slot), wired
+    // to a stub that will later open a real locator.
+    const recyclingLocatorRow = info.wasteStreamKey ? `
+      <div class="result-group">
+        <div class="result-group-row tappable" id="btn-find-recycling">
+          <div class="row-icon">📍</div>
+          <div class="row-text"><div class="row-value">${I18N.t("result_find_recycling")}</div></div>
+          <span class="row-chip">${I18N.t("result_coming_soon")}</span>
+          <svg class="row-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>` : "";
+
+    const doNotNextRows = [
+      info.doNot ? `
+        <div class="result-group-row">
+          <div class="row-icon">🚫</div>
+          <div class="row-text">
+            <div class="row-label">${I18N.t("result_do_not")}</div>
+            <div class="row-value">${info.doNot}</div>
+          </div>
+        </div>` : "",
+      info.whatHappensNext ? `
+        <div class="result-group-row">
+          <div class="row-icon">➡️</div>
+          <div class="row-text">
+            <div class="row-label">${I18N.t("result_what_happens_next")}</div>
+            <div class="row-value">${info.whatHappensNext}</div>
+          </div>
+        </div>` : ""
+    ].filter(Boolean).join("");
+    const doNotNextGroup = doNotNextRows ? `<div class="result-group">${doNotNextRows}</div>` : "";
+
     const ewasteBox = info.eWasteNote
       ? `<div class="warning-box">⚠️ <strong>${I18N.t("result_ewaste_warning")}</strong><br>${info.eWasteNote}</div>`
       : "";
@@ -258,10 +303,9 @@
         </div>
       </div>
 
-      ${recyclabilityLine}
-      ${wasteStreamRow}
-      ${bestActionRow}
+      ${guidanceGroup}
       ${appMessageBox}
+      ${recyclingLocatorRow}
 
       ${sourceNote}
 
@@ -293,8 +337,7 @@
         <ul class="check-list">${disposalItems}</ul>
       </div>
 
-      ${doNotRow}
-      ${nextRow}
+      ${doNotNextGroup}
       ${ewasteBox}
 
       <div class="section-label">${I18N.t("result_environmental_facts")}</div>
@@ -317,10 +360,20 @@
     $("#btn-scan-again").addEventListener("click", () => goToScreen("scan"));
     $("#btn-save-result").addEventListener("click", () => showSnackbar(I18N.t("result_saved")));
     $("#btn-not-plastic-link").addEventListener("click", openNotPlasticSheet);
+    const findRecyclingBtn = $("#btn-find-recycling");
+    if (findRecyclingBtn) findRecyclingBtn.addEventListener("click", () => findNearbyRecycling(info));
 
     if (opts.fresh && entry.confidence > 0.95) {
       launchConfetti();
     }
+  }
+
+  // ---------- Nearby recycling locator (placeholder) ----------
+  // Reserved hook for a future "nearest recycling stations" feature. Not
+  // wired to a real map/API yet — just tells the user it's coming so the
+  // UI slot and click-path already exist for when it's built.
+  function findNearbyRecycling(info) {
+    showSnackbar(I18N.t("result_recycling_snackbar"));
   }
 
   $("#result-back").addEventListener("click", () => goToScreen("home"));

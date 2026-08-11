@@ -73,7 +73,12 @@ const I18N_STRINGS = {
     result_not_plastic_link: "Not sure this is plastic?",
     home_not_plastic: "Not Plastic?", not_plastic_sheet_title: "Not Plastic?",
     not_plastic_sheet_intro: "If your item isn't plastic, here's how to handle some common materials.",
-    non_plastic_tag: "NOT PLASTIC"
+    non_plastic_tag: "NOT PLASTIC",
+    recyc_level_recyclable: "♻️ Recyclable in your local bin",
+    best_action_recycle: "Place in your household recycling bin.",
+    result_find_recycling: "Find Nearby Recycling Centers",
+    result_coming_soon: "Coming soon",
+    result_recycling_snackbar: "Nearby recycling search is coming soon!"
   },
   hi: {
     nav_home: "होम", nav_scan: "स्कैन", nav_history: "इतिहास", nav_settings: "सेटिंग्स",
@@ -130,7 +135,12 @@ const I18N_STRINGS = {
     result_not_plastic_link: "क्या यह प्लास्टिक नहीं है?",
     home_not_plastic: "प्लास्टिक नहीं है?", not_plastic_sheet_title: "प्लास्टिक नहीं है?",
     not_plastic_sheet_intro: "अगर आपकी वस्तु प्लास्टिक नहीं है, तो कुछ सामान्य सामग्रियों को संभालने का तरीका यहाँ है।",
-    non_plastic_tag: "प्लास्टिक नहीं"
+    non_plastic_tag: "प्लास्टिक नहीं",
+    recyc_level_recyclable: "♻️ आपके स्थानीय बिन में रीसाइक्लेबल",
+    best_action_recycle: "अपने घरेलू रीसाइक्लिंग बिन में डालें।",
+    result_find_recycling: "नज़दीकी रीसाइक्लिंग केंद्र खोजें",
+    result_coming_soon: "जल्द आ रहा है",
+    result_recycling_snackbar: "नज़दीकी रीसाइक्लिंग खोज जल्द आ रही है!"
   },
   as: {
     nav_home: "ঘৰ", nav_scan: "স্কেন", nav_history: "ইতিহাস", nav_settings: "ছেটিংছ",
@@ -187,7 +197,12 @@ const I18N_STRINGS = {
     result_not_plastic_link: "এইটো প্লাষ্টিক নহয় নেকি?",
     home_not_plastic: "প্লাষ্টিক নহয়?", not_plastic_sheet_title: "প্লাষ্টিক নহয়?",
     not_plastic_sheet_intro: "যদি আপোনাৰ বস্তুটো প্লাষ্টিক নহয়, তেন্তে কিছুমান সাধাৰণ সামগ্ৰী সামৰিবলৈ ইয়াত উপায় আছে।",
-    non_plastic_tag: "প্লাষ্টিক নহয়"
+    non_plastic_tag: "প্লাষ্টিক নহয়",
+    recyc_level_recyclable: "♻️ আপোনাৰ স্থানীয় বিনত ৰিচাইক্লেবল",
+    best_action_recycle: "আপোনাৰ ঘৰুৱা ৰিচাইক্লিং বিনত থওক।",
+    result_find_recycling: "ওচৰৰ ৰিচাইক্লিং কেন্দ্ৰ বিচাৰক",
+    result_coming_soon: "সোনকালে আহি আছে",
+    result_recycling_snackbar: "ওচৰৰ ৰিচাইক্লিং সন্ধান সোনকালে আহি আছে!"
   },
   bn: {
     nav_home: "হোম", nav_scan: "স্ক্যান", nav_history: "ইতিহাস", nav_settings: "সেটিংস",
@@ -244,7 +259,12 @@ const I18N_STRINGS = {
     result_not_plastic_link: "এটি প্লাস্টিক নয় মনে হচ্ছে?",
     home_not_plastic: "প্লাস্টিক নয়?", not_plastic_sheet_title: "প্লাস্টিক নয়?",
     not_plastic_sheet_intro: "আপনার জিনিসটি প্লাস্টিক না হলে, কিছু সাধারণ উপকরণ সামলানোর উপায় এখানে আছে।",
-    non_plastic_tag: "প্লাস্টিক নয়"
+    non_plastic_tag: "প্লাস্টিক নয়",
+    recyc_level_recyclable: "♻️ আপনার স্থানীয় বিনে রিসাইকেলযোগ্য",
+    best_action_recycle: "আপনার বাড়ির রিসাইক্লিং বিনে রাখুন।",
+    result_find_recycling: "কাছাকাছি রিসাইক্লিং কেন্দ্র খুঁজুন",
+    result_coming_soon: "শীঘ্রই আসছে",
+    result_recycling_snackbar: "কাছাকাছি রিসাইক্লিং অনুসন্ধান শীঘ্রই আসছে!"
   },
   ne: {
     nav_home: "गृह", nav_scan: "स्क्यान", nav_history: "इतिहास", nav_settings: "सेटिङहरू",
@@ -301,7 +321,12 @@ const I18N_STRINGS = {
     result_not_plastic_link: "यो प्लास्टिक होइन जस्तो लाग्छ?",
     home_not_plastic: "प्लास्टिक होइन?", not_plastic_sheet_title: "प्लास्टिक होइन?",
     not_plastic_sheet_intro: "यदि तपाईंको वस्तु प्लास्टिक होइन भने, यहाँ केही सामान्य सामग्री व्यवस्थापन गर्ने तरिका छ।",
-    non_plastic_tag: "प्लास्टिक होइन"
+    non_plastic_tag: "प्लास्टिक होइन",
+    recyc_level_recyclable: "♻️ तपाईंको स्थानीय बिनमा पुनर्चक्रणयोग्य",
+    best_action_recycle: "आफ्नो घरायसी पुनर्चक्रण बिनमा राख्नुहोस्।",
+    result_find_recycling: "नजिकैको पुनर्चक्रण केन्द्र खोज्नुहोस्",
+    result_coming_soon: "चाँडै आउँदैछ",
+    result_recycling_snackbar: "नजिकैको पुनर्चक्रण खोज चाँडै आउँदैछ!"
   },
   // ---- Beta tier: nav + language label only; rest falls back to English ----
   // via I18N's automatic fallback until reviewed by a native speaker.
