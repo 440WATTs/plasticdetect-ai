@@ -381,11 +381,43 @@ h1.hero-title {
 .co2-chip .co2-quality-estimated { color: #fff; border-color: rgba(255, 255, 255, 0.55); }
 
 .result-header {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px;
   margin: 18px 0 4px;
 }
 .result-title { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
 .result-sub { color: var(--text-muted); font-size: 14px; }
+
+/* ---------- Estimated scrap value (right side of result header,
+   where the circular confidence indicator used to sit) ---------- */
+.scrap-value-box {
+  flex: 0 0 auto;
+  text-align: right;
+  max-width: 160px;
+}
+.scrap-value-label {
+  font-size: 10.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.scrap-value-row {
+  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+  flex-wrap: wrap;
+}
+.scrap-value-amount {
+  font-size: 16px; font-weight: 800; color: var(--text);
+  white-space: nowrap;
+}
+.scrap-value-unavailable {
+  font-size: 12.5px; font-weight: 600; color: var(--text-muted);
+  line-height: 1.35;
+}
+.scrap-value-disclaimer {
+  font-size: 10.5px; color: var(--text-muted);
+  line-height: 1.35;
+  margin-top: 4px;
+}
 
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
