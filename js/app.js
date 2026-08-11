@@ -368,12 +368,12 @@
     }
   }
 
-  // ---------- Nearby recycling locator (placeholder) ----------
-  // Reserved hook for a future "nearest recycling stations" feature. Not
-  // wired to a real map/API yet — just tells the user it's coming so the
-  // UI slot and click-path already exist for when it's built.
+  // ---------- Nearby recycling locator ----------
+  // Opens the RecyclingLocator screen with a material hint so centers
+  // tagged as accepting plastic sort ahead of non-matching ones nearby.
   function findNearbyRecycling(info) {
-    showSnackbar(I18N.t("result_recycling_snackbar"));
+    goToScreen("recycling");
+    RecyclingLocator.open({ materialHint: "plastic" });
   }
 
   $("#result-back").addEventListener("click", () => goToScreen("home"));
@@ -615,6 +615,16 @@
     `);
   }
   $("#open-not-plastic").addEventListener("click", openNotPlasticSheet);
+
+  // ---------- Nearby recycling locator (home entry point) ----------
+  $("#open-recycling-locator").addEventListener("click", () => {
+    goToScreen("recycling");
+    RecyclingLocator.open();
+  });
+  // recyclingLocator.js owns its screen's DOM but not screen navigation —
+  // it dispatches this event on back-button tap and app.js (the owner of
+  // goToScreen) handles it, keeping the two modules decoupled.
+  document.addEventListener("plasticdetect:recycling-back", () => goToScreen("home"));
 
   // ---------- Eco tip ----------
   // Named (not auto-invoked) so it can run *after* applyTranslations() in
