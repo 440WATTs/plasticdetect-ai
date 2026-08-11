@@ -703,16 +703,25 @@ h1.hero-title {
   outline: none;
 }
 .recycling-search-row .btn { width: auto; padding: 10px 16px; font-size: 13.5px; }
-.recycling-controls-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.recycling-controls-row .btn-ghost { padding: 8px 4px; font-size: 13.5px; font-weight: 700; }
-#recycling-radius-select {
-  border: 1px solid var(--border);
-  background: var(--bg-soft);
-  color: var(--text);
-  border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  font-family: inherit; font-size: 13.5px; font-weight: 600;
-  outline: none;
+.recycling-controls-row { display: flex; align-items: center; }
+.recycling-locate-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-family: inherit; font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 168, 118, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.recycling-locate-btn svg { flex-shrink: 0; }
+.recycling-locate-btn:hover { background: var(--primary-dark); }
+.recycling-locate-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(0, 168, 118, 0.28);
 }
 
 .recycling-map-wrap {
