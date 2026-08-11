@@ -293,11 +293,11 @@
       : "";
 
     $("#result-body").innerHTML = `
-      <div class="result-image-wrap"><img src="${entry.image}" alt="${info.example}" /></div>
+      <div class="result-image-wrap"><img src="${entry.image}" alt="${info.name}" /></div>
 
       <div class="result-header">
         <div>
-          <div class="result-title">${info.example}</div>
+          <div class="result-title">${info.name}</div>
           <div class="result-sub">${info.fullName}</div>
           ${recyclableBadge}
         </div>
@@ -381,7 +381,7 @@
     if (navigator.share && state.lastCapture) {
       const info = PLASTIC_DB[state.lastCapture.classId];
       const status = info.recyclable ? I18N.t("result_share_recyclable") : I18N.t("result_share_not_recyclable");
-      navigator.share({ title: "PlasticDetect AI", text: I18N.t("result_share_text", { example: info.example, status }) }).catch(() => {});
+      navigator.share({ title: "PlasticDetect AI", text: I18N.t("result_share_text", { example: info.name, status }) }).catch(() => {});
     } else {
       showSnackbar(I18N.t("result_share_unsupported"));
     }
@@ -399,9 +399,9 @@
     const info = PLASTIC_DB[entry.classId];
     slot.innerHTML = `
       <div class="card card-row" id="recent-scan-card" style="cursor:pointer;">
-        <img src="${entry.image}" class="history-thumb" alt="${info.example}" />
+        <img src="${entry.image}" class="history-thumb" alt="${info.name}" />
         <div class="history-info">
-          <div class="history-title">${info.example}</div>
+          <div class="history-title">${info.name}</div>
           <div class="history-meta">${Math.round(entry.confidence * 100)}% ${I18N.t("history_confidence_word")} · ${timeAgo(entry.timestamp)}</div>
         </div>
         <svg class="chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -431,7 +431,7 @@
     const list = loadHistory().filter((e) => {
       if (!filter) return true;
       const info = PLASTIC_DB[e.classId];
-      return info.example.toLowerCase().includes(filter.toLowerCase()) || info.name.toLowerCase().includes(filter.toLowerCase());
+      return info.name.toLowerCase().includes(filter.toLowerCase()) || info.fullName.toLowerCase().includes(filter.toLowerCase());
     });
     const container = $("#history-list");
     if (!list.length) {
@@ -446,9 +446,9 @@
       const info = PLASTIC_DB[entry.classId];
       return `
         <div class="card history-item" data-id="${entry.id}">
-          <img src="${entry.image}" class="history-thumb" alt="${info.example}" />
+          <img src="${entry.image}" class="history-thumb" alt="${info.name}" />
           <div class="history-info">
-            <div class="history-title">${info.example}</div>
+            <div class="history-title">${info.name}</div>
             <div class="history-meta">${Math.round(entry.confidence * 100)}% · ${timeAgo(entry.timestamp)}</div>
           </div>
           <button class="history-delete" data-delete="${entry.id}" aria-label="${I18N.t("history_delete_aria")}">
