@@ -201,8 +201,29 @@
           ? `<span class="badge badge-no">${I18N.t("result_not_recyclable")}</span>`
           : `<span class="badge badge-unknown">${I18N.t("result_unclear")}</span>`;
 
-    const usesTags = (info.uses || []).map((u) => `<span class="tag">${u}</span>`).join("") || `<span class="tag">—</span>`;
-    const disposalItems = (info.disposal || []).map((d) => `
+    // getLocalizedPlasticField() (js/dataTranslations.js) resolves each of
+    // these to the current language's translated copy, falling back to the
+    // English data.js value (passed in as `info.X`) when untranslated —
+    // e.g. MIXED / UNKNOWN, which have no localized content.
+    const localizedUses = (typeof getLocalizedPlasticField === "function")
+      ? getLocalizedPlasticField(entry.classId, "uses", info.uses) : info.uses;
+    const localizedDisposal = (typeof getLocalizedPlasticField === "function")
+      ? getLocalizedPlasticField(entry.classId, "disposal", info.disposal) : info.disposal;
+    const localizedDecomposition = (typeof getLocalizedPlasticField === "function")
+      ? getLocalizedPlasticField(entry.classId, "decomposition", info.decomposition) : info.decomposition;
+    const localizedFact = (typeof getLocalizedPlasticField === "function")
+      ? getLocalizedPlasticField(entry.classId, "fact", info.fact) : info.fact;
+    const localizedAppMessage = (typeof getLocalizedPlasticField === "function")
+      ? getLocalizedPlasticField(entry.classId, "appMessage", info.appMessage) : info.appMessage;
+    const localizedDoNot = (typeof getLocalizedPlasticField === "function")
+      ? getLocalizedPlasticField(entry.classId, "doNot", info.doNot) : info.doNot;
+    const localizedWhatHappensNext = (typeof getLocalizedPlasticField === "function")
+      ? getLocalizedPlasticField(entry.classId, "whatHappensNext", info.whatHappensNext) : info.whatHappensNext;
+    const localizedEWasteNote = (typeof getLocalizedPlasticField === "function")
+      ? getLocalizedPlasticField(entry.classId, "eWasteNote", info.eWasteNote) : info.eWasteNote;
+
+    const usesTags = (localizedUses || []).map((u) => `<span class="tag">${u}</span>`).join("") || `<span class="tag">—</span>`;
+    const disposalItems = (localizedDisposal || []).map((d) => `
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>${d}</li>
     `).join("");
 
@@ -258,7 +279,7 @@
     ].filter(Boolean).join("");
     const guidanceGroup = guidanceRows ? `<div class="result-group">${guidanceRows}</div>` : "";
 
-    const appMessageBox = info.appMessage ? `<div class="app-message-box">${info.appMessage}</div>` : "";
+    const appMessageBox = localizedAppMessage ? `<div class="app-message-box">${localizedAppMessage}</div>` : "";
 
     // Row that jumps into the real Nearby Recycling Centers locator,
     // pre-applying a "plastic" material-match hint so tagged centers sort
@@ -273,27 +294,27 @@
       </div>` : "";
 
     const doNotNextRows = [
-      info.doNot ? `
+      localizedDoNot ? `
         <div class="result-group-row">
           <div class="row-icon">🚫</div>
           <div class="row-text">
             <div class="row-label">${I18N.t("result_do_not")}</div>
-            <div class="row-value">${info.doNot}</div>
+            <div class="row-value">${localizedDoNot}</div>
           </div>
         </div>` : "",
-      info.whatHappensNext ? `
+      localizedWhatHappensNext ? `
         <div class="result-group-row">
           <div class="row-icon">➡️</div>
           <div class="row-text">
             <div class="row-label">${I18N.t("result_what_happens_next")}</div>
-            <div class="row-value">${info.whatHappensNext}</div>
+            <div class="row-value">${localizedWhatHappensNext}</div>
           </div>
         </div>` : ""
     ].filter(Boolean).join("");
     const doNotNextGroup = doNotNextRows ? `<div class="result-group">${doNotNextRows}</div>` : "";
 
-    const ewasteBox = info.eWasteNote
-      ? `<div class="warning-box">⚠️ <strong>${I18N.t("result_ewaste_warning")}</strong><br>${info.eWasteNote}</div>`
+    const ewasteBox = localizedEWasteNote
+      ? `<div class="warning-box">⚠️ <strong>${I18N.t("result_ewaste_warning")}</strong><br>${localizedEWasteNote}</div>`
       : "";
 
     // Carbon footprint chip — overlaid on the bottom edge of the result
@@ -363,9 +384,9 @@
       <div class="card fact-card" style="padding:16px;">
         <div class="info-tile" style="padding:0;margin-bottom:10px;">
           <div class="label">${I18N.t("result_avg_decomposition")}</div>
-          <div class="value">${info.decomposition}</div>
+          <div class="value">${localizedDecomposition}</div>
         </div>
-        <div style="font-size:14px;line-height:1.5;color:var(--text);">${info.fact}</div>
+        <div style="font-size:14px;line-height:1.5;color:var(--text);">${localizedFact}</div>
       </div>
 
       <div class="btn-row" style="margin-top:20px;">
@@ -665,7 +686,7 @@
             <span style="font-weight:700;font-size:14px;">${info.name}</span>
           </div>
           <div style="font-size:12.5px;color:var(--text-muted);margin-bottom:6px;">${I18N.t("recyc_level_" + info.recyclabilityLevel)} · ${I18N.t(info.wasteStreamKey)}</div>
-          <div style="font-size:13px;color:var(--text);line-height:1.45;">${info.note}</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.45;">${(typeof getLocalizedNonPlasticNote === "function") ? getLocalizedNonPlasticNote(id, info.note) : info.note}</div>
         </div>
       `;
     }).join("");
