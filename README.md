@@ -1,8 +1,23 @@
-# PlasticDetect AI (V1)
+# PlasticDetect AI
 
-A mobile-first PWA that identifies plastic waste from a photo using a real
-trained MobileNetV2 model running entirely on-device via TensorFlow.js —
-no photo ever leaves the phone.
+### On-Device AI-Powered Plastic Waste Classification
+
+PlasticDetect AI is a mobile-first Progressive Web App (PWA) that uses computer vision and on-device machine learning to classify plastic waste from camera or gallery images and provide material-specific recycling information.
+
+The application uses a MobileNetV2-based image classification model with TensorFlow.js, allowing inference to run directly in the browser without sending images to a remote server.
+
+## Key Highlights
+
+- 9-class plastic material classification
+- MobileNetV2 transfer learning
+- TensorFlow.js browser-based inference
+- On-device image processing
+- Camera and gallery input
+- Confidence-score visualization
+- Classification history
+- Offline model/runtime caching
+- Progressive Web App (PWA) support
+- Material-specific recycling guidance
 
 ## Run it
 ```bash
